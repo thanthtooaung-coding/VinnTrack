@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
+<style>
+a {
+		text-decoration: none;	
+	}
+.modal-card {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 300;
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 60%;
+}
+
+/* The Close Button */
+.close {
+	color: #aaaaaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.deleteLink {
+	color: var(--alert);
+}
+
+.deleteLink:hover {
+	color: red;
+	text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+	.modal-content {
+		width: 80%;
+	}
+}
+
+
+.success-message {
+			    	font-weight: bold;
+			        background-color: #dff0d8; /* Green background color */
+			        color: #3c763d; /* White text color */
+			        padding: 15px; /* Padding around the message */
+			        margin-top: -30px;
+			        margin-bottom: 20px; /* Bottom margin to separate from other elements */
+			        border-top-left-radius: 5px; /* Rounded corners for top left */
+			        border-top-right-radius: 5px; /* Rounded corners for top right */
+			        border-bottom-right-radius: 0; /* No rounded corners for bottom right */
+			        border-bottom-left-radius: 0; /* No rounded corners for bottom left */
+			        font-size: 16px; /* Font size */
+			        text-align: center; /* Center text */
+			        display: block; /* Display as a block element */
+			        position: relative; /* Position relative for the close button */
+			    }
+			
+			    .success-message .close {
+			        position: absolute; /* Absolute positioning for the close button */
+			        top: 5px; /* Adjust top positioning */
+			        right: 10px; /* Adjust right positioning */
+			        cursor: pointer; /* Add a pointer cursor on hover */
+			        font-size: 20px; /* Adjust font size */
+			    }
+</style>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script>
+$(document).ready(
+		function() {		
+		    new DataTable('#example', {
+		        "lengthMenu": [3, 5, 10, 25],
+		        "pageLength": 5,
+		        initComplete: function () {
+		            this.api().columns().every(function () {
+		                let column = this;
+		                if (column.header().textContent !== '' && column.header().textContent !== 'Action' && column.header().textContent !== 'No.' && column.header().textContent !== 'Start Date' && column.header().textContent !== 'End Date') {
+		                    let select = document.createElement('select');
+		                    let label = document.createElement('label');
+		                    label.textContent = column.header().textContent;
+		                    column.header().textContent = '';
+		                    column.header().appendChild(label);
+		                    select.add(new Option(''));
+		                    select.addEventListener('click', function (event) {
+		                        event.stopPropagation();
+		                    });
+		                    select.addEventListener('change', function () {
+		                        column.search(select.value, {exact: true}).draw();
+		                    });
+		                    column.data().unique().sort().each(function (d, j) {
+		                        select.add(new Option(d));
+		                    });
+		                    column.header().appendChild(select);
+		                }
+		            });
+		        }
+		    });		
+		    var now = new Date();
+		    var month = (now.getMonth() + 1);     
+		    var day = now.getDate();
+		    if (month < 10) 
+		        month = "0" + month;
+		    if (day < 10) 
+		        day = "0" + day;
+		    var today = now.getFullYear() + '-' + month + '-' + day;
+		    $('#startDateInput').val(today);
+		    $('#endDateInput').val(today);	   
+		    function toggleSubmitButton() {
+		        var leaveType = $('#leaveType').val();
+		        var startDate = $('#startDateInput').val();
+		        var endDate = $('#endDateInput').val();
+		        var email = $('#email').val();
+		        var phoneNumber = $('#phoneNumber').val();
+		        var leaveReason = $('#leaveReasonInput').val();
+
+		        var submitButton = $('.form-btn .form-button.save');
+
+		        // Check if values are undefined or null and handle them gracefully
+		        leaveType = leaveType ? leaveType.trim() : '';
+		        startDate = startDate ? startDate.trim() : '';
+		        endDate = endDate ? endDate.trim() : '';
+		        email = email ? email.trim() : '';
+		        phoneNumber = phoneNumber ? phoneNumber.trim() : '';
+		        leaveReason = leaveReason ? leaveReason.trim() : '';
+
+		        if (leaveType !== '' && startDate !== '' && endDate !== '' && email !== '' && phoneNumber !== '' && leaveReason !== '') {
+		            // If all required fields are not null, enable the button
+		            submitButton.prop('disabled', false).addClass('active');
+		            console.log('Submit button enabled');
+		        } else {
+		            // If any required field is null, disable the button
+		            submitButton.prop('disabled', true).removeClass('active');
+		            console.log('Submit button disabled');
+		        }
+		    }
+
+		    // Call the function on page load
+		    toggleSubmitButton();
+
+		    // Bind the function to the input field's keyup event
+		    $('#leaveType, #startDateInput, #endDateInput, #email, #phoneNumber, #leaveReasonInput').on('keyup change', function() {
+		        toggleSubmitButton();
+		    });	
+		});
+</script>
+<title>VinnTrack - Leave</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems" class="active"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems"><i class="fa-solid fa-users"></i>
+					Employee <i class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown">
+					<li><a href="user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span> View
+								Employee</span></a></li>
+
+					<li><a href="user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span> Add
+								Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems"><i
+					style="font-size: 24px;" class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>
+
+			<li><a href="profile" id="sidebarItems"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="login"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Leave</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Leave</a></li>
+			</ul>
+						
+            <form th:object="${leaveRecordDto}" class="form-container" action="leave/requestLeave" th:if="${session.currentUser.role == 'EMPLOYEE'}" method="post">
+            
+            <script>
+			    const urlParams = new URLSearchParams(window.location.search);
+			    const successParam = urlParams.get('success');			
+			    if (successParam === 'true') {			        			
+			    	document.write('<div class="success-message" id="successMessage">Leave request submitted successfully! <span class="close" onclick="closeSuccessMessage()">×</span></div>');
+			    	document.getElementById('successMessage').display = 'block';
+			        history.replaceState({}, document.title, window.location.pathname + window.location.search.replace(/[\?&]success=true/, ''));
+			    }		    
+			    function closeSuccessMessage() {
+			        const successMessage = document.getElementById('successMessage');
+			        successMessage.style.display = 'none';
+			    }
+			</script>
+				<div class="success-message" id="successMessage">Leave request submitted successfully! <span class="close" onclick="closeSuccessMessage()">×</span></div>
+                <div class="form-title">                
+                    <h4>VinnTrack - Leave Request Form</h4>
+                </div> 
+                			
+                <div>                                                       
+                    <div class="input-box-container">
+                        <div class="input-box inputbox-border-bottom ">
+                            <div class="icon">
+                                <i class="bx bxs-user"></i>
+                            </div>        
+                            <input type="text" name="leaveUserName" required="required" autocomplete="off" class="text-input" placeholder="Name" th:value="${session.currentUser.name}" disabled />
+							<label class="input-label" for="name">Name</label>
+                        </div>
+                        <div class="input-box inputbox-border-bottom ">
+                            <div class="icon">
+                                <i class="bx bxs-buildings"></i>
+                            </div>
+							<select id="leaveType" name="leaveTypeId" required>
+								<option value="" label="Select Leave Type" disabled selected />
+								<option th:each="leaveType, index : ${allLeaveTypes}"
+									th:value="${leaveType.id}" th:text="${leaveType.name}" />
+							</select>
+							<label class="input-label" for="startDate">Leave Type</label>
+                        </div>                                                       
+                    </div>
+                    <div class="input-box-container">
+                        <div class="input-box inputbox-border-bottom ">
+                            <div class="icon">
+                                <i class="bx bxs-buildings"></i>
+                            </div>
+                            <input type="date" name="startDate" required="required" autocomplete="off" class="text-input" placeholder="Start Date" id="startDateInput"/>                            
+                            <label class="input-label" for="startDate">Start Date</label>                            						
+                        </div>    
+                        <div class="input-box inputbox-border-bottom ">
+                            <div class="icon">
+                                <i class="bx bxs-buildings"></i>
+                            </div>
+                            <input type="date" name="endDate" required="required" autocomplete="off" class="text-input" placeholder="End Date" id="endDateInput"/>                            
+                            <label class="input-label" for="startDate">End Date</label>                            						
+                        </div>                                                       
+                    </div>                    
+                    <div class="input-box-container">
+                        <div class="input-box inputbox-border-bottom">
+                            <div class="icon">
+                                <i class="bx bxs-envelope"></i>
+                            </div>
+                            <input type="text" id="email" name="leaveUserEmail" required="required" autocomplete="off" class="text-input" placeholder="Email" th:value="${session.currentUser.email}" />                            
+                            <label class="input-label" for="startDate">Email</label>                            						
+                        </div>
+                        <div class="input-box inputbox-border-bottom">
+                            <div class="icon">
+                                <i class="fa-solid fa-square-phone"></i>
+                            </div>
+                            <input type="text" id="phoneNumber" name="leaveUserPhoneNumber" required="required" autocomplete="off" class="text-input" placeholder="Phone Number" th:value="${session.currentUser.phone}" />                            
+                            <label class="input-label" for="startDate">Phone Number</label>                            						
+                        </div>
+                    </div>
+                    <div class="input-box-container">
+                        <div class="input-box inputbox-border-bottom address">
+                            <div class="icon">
+                                <i class="bx bxs-buildings"></i>
+                            </div>
+                            <input type="text" name="reason" required="required" autocomplete="off" class="text-input" placeholder="Leave Reason" id="leaveReasonInput"/>                            
+                            <label class="input-label" for="startDate">Leave Reason (Description)</label>                            						
+                        </div>                                                                               
+                    </div>
+                    <div class="form-btn mr-100">
+                        
+                        <input class="form-button save" onclick="showSuccessBox()" type="submit" value="Submit" disabled>
+                    </div>                                        
+                </div>
+            </form>                	
+            
+            <table th:if="${session.currentUser.role != 'EMPLOYEE'}" id="example" class="table table-striped" style="width:100%">
+		        <thead>
+		            <tr>
+		            	<th>No.</th>
+		            	<th>Name</th>		                
+		                <th>Start Date</th>
+		                <th>End Date</th>
+		                <th>Type</th>
+		                <th>Reason</th>
+		                <th>Status</th>
+		                <th style="text-align: center;">Action</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            <tr th:each="leaveRecord, index : ${allLeaveRecords}">
+		            	<td class="text-center" th:text="${index.count}+'.'"></td>
+		                <td  th:text="${leaveRecord.user.name}"></td>                        
+                        <td th:text="${#dates.format(leaveRecord.startDate, 'MMM - dd - yyyy')}"></td>
+						<td th:text="${#dates.format(leaveRecord.endDate, 'MMM - dd - yyyy')}"></td>
+						<td th:text="${leaveRecord.leaveType.name}"> </td>
+                        <td class="text-center" th:text="${leaveRecord.reason}"></td>
+                        <!-- <td class="text-center" th:text="${leaveRecord.status}"></td> -->
+                        <td class="text-center" th:text="${leaveRecord.status == 'Pending' ? 'Pending' : (leaveRecord.status == 'Accept' ? 'Accept' : leaveRecord.status)}" th:style="${leaveRecord.status == 'Pending' ? 'color: blue; text-align: center;' : (leaveRecord.status == 'Accept' ? 'color: green; text-align: center;' : 'color: var(--alert); text-align: center;')}"></td>                                                
+                        <td style="text-align: center;">
+                        <div class="leave-menu">
+	                        <i style="font-size: 20px;" class="fa-solid fa-ellipsis leave-menu-icon"></i>
+	                        <ul class="leave-menu-link">
+								<li class="viewDetails"><a><i class="fa-solid fa-eye icon"></i> View Details</a></li>
+								<li th:if="${session.currentUser.role != 'CEO'}"><a class="deleteLink" th:href="@{/leave/delete/{id}(id=${leaveRecord.id})}" style="color: var(--alert); text-decoration: none;"><i class="fa-solid fa-trash icon"></i> Delete</a></li>										
+							</ul>
+						</div>
+                        </td>
+                        
+		            </tr>
+		        </tbody>
+		    </table>
+		    
+		    <div id="myModal" class="modal-card"
+				th:each="leaveRecord, index : ${allLeaveRecords}"
+				th:id="'modal-' + ${index}">
+				<!-- Modal content -->
+				<form class="modal-content" id="leaveAcceptRejectFormModal" method="post">
+					<div style="display : flex; align-items: center; justify-content: space-between;">
+						<p><strong style="font-size: 20px; padding: 20px" th:text="${leaveRecord.user.name} + '\'s Leave Request Form Details'"></strong></p>
+						<span style="padding: 20px" class="close">&times;</span>
+					</div>
+					<div>                                                       
+	                    <div class="input-box-container">
+	                        <div class="input-box inputbox-border-bottom ">
+	                            <div class="icon">
+	                                <i class="bx bxs-user"></i>
+	                            </div>                            
+	                            <input type="text" name="leaveUserName" required="required" autocomplete="off" class="text-input" placeholder="Name" th:value="${leaveRecord.user.name}" disabled />
+								<label class="input-label" for="name">Name</label>
+	                        </div>
+	                        <div class="input-box inputbox-border-bottom ">
+	                            <div class="icon">
+	                                <i class="bx bxs-buildings"></i>
+	                            </div>
+								<input type="text" name="leaveUserName" required="required" autocomplete="off" class="text-input" placeholder="Name" th:value="${leaveRecord.leaveType.name}" disabled />
+								<label class="input-label" for="startDate">Leave Type</label>                                                                                                            				
+	                        </div>                                                       
+	                    </div>
+	                    <div class="input-box-container">
+	                        <div class="input-box inputbox-border-bottom ">
+	                            <div class="icon">
+	                                <i class="bx bxs-buildings"></i>
+	                            </div>
+	                            <input disabled type="date" name="startDate" required="required" autocomplete="off" class="text-input" placeholder="Start Date" id="startDateInput" th:value="${leaveRecord.startDate}"/>                            
+	                            <label class="input-label" for="startDate">Start Date</label>                            						
+	                        </div>    
+	                        <div class="input-box inputbox-border-bottom ">
+	                            <div class="icon">
+	                                <i class="bx bxs-buildings"></i>
+	                            </div>
+	                            <input disabled type="date" name="endDate" required="required" autocomplete="off" class="text-input" placeholder="End Date" id="endDateInput" th:value="${leaveRecord.endDate}"/>                            
+	                            <label class="input-label" for="startDate">End Date</label>                            						
+	                        </div>                                                       
+	                    </div>                    
+	                    <div class="input-box-container">
+	                        <div class="input-box inputbox-border-bottom">
+	                            <div class="icon">
+	                                <i class="bx bxs-envelope"></i>
+	                            </div>
+	                            <input disabled type="text" id="email" name="leaveUserEmail" required="required" autocomplete="off" class="text-input" placeholder="Email" th:value="${leaveRecord.user.email}" />                            
+	                            <label class="input-label" for="startDate">Email</label>                            						
+	                        </div>
+	                        <div class="input-box inputbox-border-bottom">
+	                            <div class="icon">
+	                                <i class="fa-solid fa-square-phone"></i>
+	                            </div>
+	                            <input disabled type="text" id="phoneNumber" name="leaveUserPhoneNumber" required="required" autocomplete="off" class="text-input" placeholder="Phone Number" th:value="${leaveRecord.user.phone}" />                            
+	                            <label class="input-label" for="startDate">Phone Number</label>                            						
+	                        </div>
+	                    </div>
+	                    <div class="input-box-container">
+	                        <div class="input-box inputbox-border-bottom address">
+	                            <div class="icon">
+	                                <i class="bx bxs-buildings"></i>
+	                            </div>
+	                            <input disabled type="text" name="reason" required="required" autocomplete="off" class="text-input" placeholder="Leave Reason" id="leaveReasonInput" th:value="${leaveRecord.reason}"/>                            
+	                            <label class="input-label" for="startDate">Leave Reason (Description)</label>                            						
+	                        </div>                                                                               
+	                    </div>
+	                    <div class="form-btn mr-100" th:if="${leaveRecord.status == 'Pending' and session.currentUser.role != 'CEO'}">
+	                        <a th:href="@{/leave/reject/{id}(id=${leaveRecord.id})}" class="form-button" style="background: #f8d7da; color: #721c24; display: flex; align-items: center; justify-content: center;">Reject</a>
+	                        <a th:href="@{/leave/accept/{id}(id=${leaveRecord.id})}" class="form-button" style="background :#d4edda; color: #155724; display: flex; align-items: center; justify-content: center;">Accept</a>
+	                    </div>
+	                    <div class="form-btn mr-100" th:if="${leaveRecord.status} != 'Pending'" >
+	                        <label class="input-label" for="startDate" th:text="'This form has already ' + (${leaveRecord.status == 'Accept' ? 'accepted.' : leaveRecord.status == 'Reject' ? 'rejected.' : ''})" th:style="${leaveRecord.status == 'Accept' ? 'color: green; text-align: center;' : 'color: var(--alert); text-align: center;'}"></label>
+	                    </div>
+	                    <div class="form-btn mr-100" th:if="${leaveRecord.status == 'Pending' and session.currentUser.role == 'CEO'}">
+	                        <label class="input-label" for="startDate" th:text="'This request form is still pending.'" style="color: blue; text-align: center;"></label>
+	                    </div>	                    
+	                </div>
+				</form>
+			</div>
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+	</section>
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li
+				style="display: flex; justify-content: center; flex-direction: row;">
+				<button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button>
+			</li>
+		</ul>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.js"></script>
+	
+	<script src="/assets/js/dashboardScript.js"></script>
+	<script>
+		document.querySelectorAll('.deleteLink').forEach(deleteLink => {
+	        deleteLink.addEventListener('click', function(event) {
+	            event.preventDefault();
+	            event.stopPropagation();
+	            var result = confirm("Are you sure you want to delete?");
+	            if (result) {
+	                var form = deleteLink.closest('form');
+	                form.submit();
+	            }
+	        });	        
+	    });		
+		var btns = document.querySelectorAll('.viewDetails');
+		var modals = document.querySelectorAll('.modal-card');
+		var spans = document.querySelectorAll('.close');
+	
+		btns.forEach((btn, index) => {
+		    btn.addEventListener('click', function() {
+		        modals[index].style.display = "block";
+		    });
+		});
+	
+		spans.forEach((span, index) => {
+		    span.addEventListener('click', function() {
+		        modals[index].style.display = "none";
+		    });
+		});
+	
+		window.onclick = function(event) {
+		    modals.forEach((modal) => {
+		        if (event.target == modal) {
+		            modal.style.display = "none";
+		        }
+		    });
+		};
+	</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+
+<title>VinnTrack - Dashboard</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" class="active" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems"><i class="fa-solid fa-users"></i>
+					Employee <i class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown">
+					<li><a href="user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span> View
+								Employee</span></a></li>
+
+					<li><a href="user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span> Add
+								Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems"><i
+					style="font-size: 24px;" class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>			
+
+			<li><a href="profile" id="sidebarItems"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="/logout"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Dashboard</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Dashboard</a></li>
+			</ul>
+			<!-- Dashboard -->
+			<div class="information">
+				<div class="card">
+					<div class="card-header">
+						<div class="icon-box box-1">
+							<i class="fa-solid fa-users"></i>
+						</div>
+						<div class="card-details">
+							<p>Employee</p>
+							<h2 id="totalEmployee" th:text="${employeeCount}"></h2>
+						</div>
+					</div>
+					<hr>
+					<div class="page-link">
+						<a href="user/view">View Details</a> <i
+							class="fa-solid fa-up-right-from-square"></i>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<div class="icon-box box-2">
+							<i style="font-size: 28px;" class='bx bxs-buildings'></i>
+						</div>
+						<div class="card-details">
+							<p>Department</p>
+							<h2 th:text="${departmentCount}"></h2>
+						</div>
+					</div>
+					<hr>
+					<div class="page-link">
+						<a href="/department">View Details</a> <i
+							class="fa-solid fa-up-right-from-square"></i>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<div class="icon-box box-3">
+							<i class="fa-solid fa-ranking-star"></i>
+						</div>
+						<div class="card-details">
+							<p>Position</p>
+							<h2 th:text="${positionCount}"></h2>
+						</div>
+					</div>
+					<hr>
+					<div class="page-link">
+						<a href="position">View Details</a> <i
+							class="fa-solid fa-up-right-from-square"></i>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<div class="icon-box box-4">
+							<i style="font-size: 28px;" class='bx bxs-chat'></i>
+						</div>
+						<div class="card-details">
+							<p>Notifications</p>
+							<h2 th:text="${notificationCount}"></h2>
+						</div>
+					</div>
+					<hr>
+					<div class="page-link">
+						<a href="notifications">View Details</a> <i
+							class="fa-solid fa-up-right-from-square"></i>
+					</div>
+				</div>
+			</div>
+			<div class="extra-information">
+				<div class="records">
+					<div class="card">
+						<div class="card-header">
+							<div class="icon-box box-5"
+								style="background: linear-gradient(195deg, #ffce45, #ff9800);">
+								<i style="font-size: 28px;" class='fa-solid fa-clock icon'></i>
+							</div>
+							<div class="card-details">
+								<p>Today's Attendance</p>
+								<h2 style="display: none;" id="totalAttendanceEmployee" th:text="${todayAttendanceCount}"></h2>
+								<h2 id="attendancePercent"></h2>
+							</div>
+						</div>
+
+						<hr>
+						<div class="page-link">
+							<a href="/attendance">View Details</a> <i
+								class="fa-solid fa-up-right-from-square"></i>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header">
+							<div class="icon-box box-6"
+								style="background: linear-gradient(195deg, #e040fb, #9c27b0);">
+								<i style="font-size: 28px;" class='fa-solid fa-file-pen'></i>
+							</div>
+							<div class="card-details">
+								<p>Today's Leave</p>
+								<h2 id="leavePercent"></h2>
+							</div>
+						</div>
+						<hr>
+						<div class="page-link">
+							<a href="/leave">View Details</a> <i
+								class="fa-solid fa-up-right-from-square"></i>
+						</div>
+					</div>
+				</div>
+
+				<div th:if="${session.currentUser.role != 'CEO'}" class="noti-box">
+					<div class="card">
+						<div class="card-header">
+							<div
+								style="display: flex; flex-direction: row; align-items: center; column-gap: 10px;">
+								<i style="font-size: 28px;" class='fa-solid fa-bell noti-icon'></i>
+								<h3 class="noti-title">Notifications</h3>
+							</div>
+
+						</div>
+						<hr>
+
+						<ul class="dashboard-noti-box">
+
+							<li th:each="notification, index : ${latestNotifications}">
+								<div class="noti-box-img-container">
+									<img
+										src="data:image/jpg;base64,${notification.employeeProfileImageString }"
+										alt="pfp" />
+								</div>
+								<div class="noti-text-box-container">
+									<p class="noti-box-extra-text">
+										<span class="name">${notification.employeeName}</span> just
+										${notification.notificationType}<br> <span
+											class="noti-text-link">Click to see more</span>
+									</p>
+								</div>
+							</li>
+
+						</ul>
+
+						<hr>
+						<div class="page-link">
+							<a href="" target="_blank">View Details</a> <i
+								class="fa-solid fa-up-right-from-square"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+		<!-- MAIN -->
+	</section>
+	<!-- FOOTER -->
+	<!-- END FOOTER -->
+
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li><button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button></li>
+		</ul>
+	</div>
+	<script src="/assets/js/dashboardScript.js"></script>
+</body>
+</html>

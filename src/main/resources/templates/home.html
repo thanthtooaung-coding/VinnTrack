@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:wght@400;500&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <style>
+    	*{
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+body{
+    font-family: 'Montserrat', sans-serif;
+    scroll-behavior: auto;
+    overflow-x: hidden;
+}
+nav{
+    z-index: 1;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    height: 80px;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+}
+button {
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+.logo {    
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    float: left;
+    flex-direction: row;    
+}
+
+.logo label{
+    color: #333;
+    font-size: 35px;
+    line-height: 80px;
+    font-weight: 700;
+}
+nav ul{
+    float: right;
+    margin-right: 20px;
+}
+nav ul .nav-item{
+    display: inline-block;
+    line-height: 80px;
+    margin: 0 20px;
+}
+nav ul .nav-item .nav-item-link{
+    position: relative;
+    color: #042a7c;
+    font-size: 18px;
+    /* padding: 7px 13px; */
+    padding: 6px 0px;    
+    font-weight: 500;
+}
+/* a.active,a:hover{
+    background: #1b9bff;
+    transition: .5s;
+} */
+
+nav ul .nav-item .nav-item-link:before{
+    content: '';
+    position: absolute;
+    /* upward */
+    /* bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    opacity: 0; */
+    /* normal */
+    /* bottom: 0;
+    left: 0; */
+    height: 3px;
+    width: 0%;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    transition: all 0.4s ease;
+    background: #34efdf;
+    background: #0082e6;
+}
+
+nav ul .nav-item .nav-item-link:hover:before{
+    /* upward */
+    /* bottom: 0px;
+    opacity: 1; */
+    /* Normal */
+    width: 100%;
+}
+nav ul .nav-item.active .nav-item-link:before {
+    width: 100%;
+}
+
+nav ul .nav-item .nav-item-link:hover {
+    color: #0082e6;
+}
+
+nav ul .nav-item .nav-item-link:active {
+    color: #0056b3; /* You can adjust the color for the active state */
+}
+
+
+
+.checkbtn{
+    font-size: 30px;
+    color: #333;
+    float: right;
+    line-height: 80px;
+    margin-right: 30px;
+    cursor: pointer;
+    display: none;
+}
+#check{
+    display: none;
+}
+.login-btn {
+    background: #0082e6;
+    border-radius: 13px;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 13px;
+    color: #fff;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0px;
+}
+
+/* .container {
+    height: 100vh;
+} */
+
+.home-container {
+    background: url(assets/img/abc.jpg) no-repeat;
+    color: white;
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+}
+
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.overlay h2, .overlay p {
+    margin: 0px 10px;
+}
+
+h2 {
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 1.5em;
+    letter-spacing: 1px;
+}
+
+p {
+    font-size: 24px;
+    font-weight: 500;    
+}
+
+h3 {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+/* About */
+.about-container {
+    top: 0px;
+    height: 100%;
+}
+.inner-container {
+    width: 97%;
+    margin-left: 0px;
+    margin-right: 0px;
+    color: #042a7c;
+}
+
+.inner-container-heading {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.inner-container-body {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    margin-top: 60px;
+    column-gap: 15px;
+}
+
+.inner-container-body-img-box {
+    width: 40%;
+    display: flex;
+    float: right;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.inner-container-body-img-box img {
+    width: 600px;
+    height: 400px;
+}
+
+.inner-container-img-text {
+    font-size: 14px;
+    font-style: italic;
+    color: #999;
+    text-align: center;
+}
+
+.inner-container-body-box-container {
+    float: left;
+    width: 60%;
+    height: 68vh;
+}
+
+.inner-container-body-box-container {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+}
+
+.box-col {
+    width: 49%;
+    /* border: 1px solid black; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+    display: flex;
+    padding: 0px 20px;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    row-gap: 20px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+}
+
+
+.box-header {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    
+}
+
+.box-1 {
+    height: 240px;
+}
+
+.box-2 {
+    height: 200px;
+}
+
+.icon {
+    font-size: 30px;
+}
+
+h4 {
+    
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.box-body p{
+    padding: 0px 10px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #333;
+    font-weight: 300;
+    line-height: 22px;
+    list-style: 0.9;
+    opacity: 0.7;
+}
+
+.faq-col {
+    width: 50%;
+    border: 1px solid black;
+}
+
+
+
+@media (max-width: 883px){    
+    
+    .checkbtn{
+        display: block;
+    }
+    ul{
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background: #2c3e50;
+        background: #333;
+        top: 80px;
+        left: -100%;
+        text-align: center;
+        transition: all .5s;
+    }
+    nav ul .nav-item{
+        display: block;
+        margin: 50px 0;
+        line-height: 30px;
+    }
+    nav ul .nav-item .nav-item-link{
+        font-size: 20px;
+        color: #fff;
+    }
+    .nav-item-link:hover, .nav-item-link.active{        
+        color: #0082e6;
+    }
+    #check:checked ~ ul{
+        left: 0;
+    }
+    h2 {
+        font-size: 24px;
+    }
+    p {
+        font-size: 18px;
+    }
+    h3 {
+        font-size: 20px;
+    }
+    
+}
+
+@media (max-width: 700px) {
+    .inner-container-body-box-container {
+        width: 100%;
+        margin: 0;
+        flex-direction: column;
+        row-gap: 20px;
+    }
+
+    .box-col {
+        width: 100%;
+        margin: 0;
+    }
+
+    .box {
+        height: auto; /* Adjust as needed */
+    }
+
+    .inner-container-body-img-box img {
+        width: 100%; /* Adjust as needed */
+        height: auto; /* Maintain aspect ratio */
+    }
+}
+    </style>
+    <title>VinnTrack - Home</title>
+</head>
+<body>
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <div class="logo">
+            <img src="assets/img/logo-removebg-preview.png" alt="">
+            <label class="">VinnTrack</label>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item" data-section="home" onclick="changeActive('home')"><a class="nav-item-link active" href="#home">Home</a></li>
+            <li class="nav-item" data-section="about" onclick="changeActive('about')"><a class="nav-item-link" href="#about">About</a></li>
+            <li class="nav-item" data-section="faq" onclick="changeActive('faq')"><a class="nav-item-link" href="#faq">FAQ</a></li>
+            <li class="nav-item" data-section="contact" onclick="changeActive('contact')"><a class="nav-item-link" href="#contact">Contact</a></li>
+            <li class="nav-item"><a href="login" class="login-btn">Login</a></li>
+        </ul>
+        
+        
+    </nav>
+    <main>
+        <section class="container home-container" id="home">
+            <div class="overlay">            
+                <h2>VinnTrack - Employee Attendance And Payroll Management System</h2>
+                <p>A progressive web software developed to provide complete employee attendance solutions for everyone.</p>
+                <h3>Smart solution for the modern business.</h3>
+                <button class="login-btn">Login Now</button>
+            </div>
+        </section>
+        <section class="container about-container" id="about">
+            <div class="inner-container">
+                <div class="inner-container-heading">
+                    <h2>Employee Attendance Monitoring</h2>
+                </div>
+                <div class="inner-container-body">
+                    <div class="inner-container-body-img-box">
+                        <img src="assets/img/inner-container-img1.webp" alt="">
+                        <p class="inner-container-img-text">Employee Attendance Monitoring</p>
+                    </div>
+                    <div class="inner-container-body-box-container">
+                        <div class="box-col">
+                            <div class="box box-1">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-user-clock icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>REAL TIME ATTENDANCE</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>A cloud-based employee monitoring system tracks attendance data in real-time from a variety of sources. The system seamlessly can be accessed through web/mobile platforms.</p>
+                                    </div>
+                                
+                            </div>
+                            <div class="box box-2">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-map-location-dot icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>EMPLOYEE LOCATION TRACKING</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Employees locations can be tracked using Google maps. Location of the last login can be tracked.</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                        <div class="box-col">
+                            <div class="box box-2">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-regular fa-rectangle-list icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>SMART DASHBOARD</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>With VinnTrack, you can monitor employee attendance, manage leaves, and generate employee salary for every business.</p>
+                                    </div>
+                                
+                            </div>
+                            <div class="box box-1">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-users-gear icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>ATTENDANCE REGULARIZATION</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>VinnTrack allows employees to regularize their attendance based on organisation policy. The attendance can be regularized for days that you did not time-in/time-out, and for early/late time-ins and outs.</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Remote employee monitoring -->
+            <div class="inner-container">
+                <div class="inner-container-heading">
+                    <h2>Remote Employee Monitoring</h2>
+                </div>
+                <div class="inner-container-body">
+                    
+                    <div class="inner-container-body-box-container">
+                        <div class="box-col">
+                            <div class="box box-1">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-tv icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>Remote Employee Monitoring System</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>A single dashboard can be used to track and monitor remote employees. From time-in to time-out, every employee's activity can be tracked and analyzed. Organizations can improve their business by using VinnTrack.</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                        <div class="box-col">
+                            <div class="box box-2">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-chart-bar icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>Attendance Reports</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Gain insights into remote employee attendance patterns with VinnTrack reports. Track trends and identify irregularities for effective workforce management.</p>
+                                    </div>
+                                    
+                            </div>
+                            
+                            <div class="box box-2">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-comment-dots icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>Confidential CEO Messaging</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Direct messaging allows employees and admins to confidentially communicate with the CEO. This feature promotes to open message dialogue.</p>
+                                    </div>                                    
+                                
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <div class="inner-container-body-img-box">
+                        <img src="assets/img/Remote-Employee-Monitoring.png" alt="">
+                        <p class="inner-container-img-text">Remote Employee Monitoring</p>
+                    </div>
+                </div>
+            </div>
+           
+            <!-- Leave Management -->
+            <div class="inner-container">
+                <div class="inner-container-heading">
+                    <h2>Leave Management</h2>
+                </div>
+                <div class="inner-container-body">
+                    <div class="inner-container-body-img-box">
+                        <img src="assets/img/Leave-Management.png" alt="">
+                        <p class="inner-container-img-text">Leave Management</p>
+                    </div>
+                    <div class="inner-container-body-box-container">
+                        <div class="box-col">
+                            <div class="box box-1">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-mouse-pointer icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>ONE CLICK LEAVE PROCESS</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>VinnTrack provides a one-step process for raising and approving leave applications. Permissions can be assigned to concerned managers for the approval process.</p>
+                                    </div>
+                                
+                            </div>
+                            <div class="box box-2">
+                                
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-tools icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>EASY LEAVE APPROVAL</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Online leave requests can be notified by administrator. It automatically updates the salary of all employees.</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                        <div class="box-col">
+                            <div class="box box-2">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-calendar-days icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>LEAVE CALENDAR</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Leave calendar helps to track leaves taken, pending leaves, and also a list of holidays in the corresponding year.</p>
+                                    </div>
+                                
+                            </div>
+                            <div class="box box-1">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-file-lines icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>LEAVE REPORTS</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Leave reports of the entire company can be viewed in a single table. It helps to organize employees according to their respective company policy.</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inner-container">
+                <div class="inner-container-heading">
+                    <h2>Customizable Settings and Profiles</h2>
+                </div>
+                <div class="inner-container-body">
+                    
+                    <div class="inner-container-body-box-container">
+                        <div class="box-col">
+                            <div class="box box-1">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-cog icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>ACCOUNT SETTINGS</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Manage your account settings efficiently with VinnTrack's user-friendly interface. Customize preferences and update information seamlessly.</p>
+                                    </div>
+                                
+                            </div>
+                            <div class="box box-2">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-key icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>CHANGE PASSWORD</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Enhance security by changing your password easily within VinnTrack. Our user-friendly interface allows for a seamless password update process.</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                        <div class="box-col">
+                            <div class="box box-2">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-solid fa-bell icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>NOTIFICATION PREFERENCES</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Get timely updates and alerts, and conveniently view notifications within VinnTrack for a streamlined user experience.</p>
+                                    </div>
+                                
+                            </div>
+                            <div class="box box-1">
+                                
+                                    <div class="box-header">
+                                        <div class="icon-box">
+                                            <i class="fa-regular fa-user-circle icon"></i>
+                                        </div>
+                                        <div class="box-header-text">
+                                            <h4>PROFILE SETTINGS</h4>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>Personalize your VinnTrack profile to showcase your professional identity. Effortlessly update personal details and ensure your profile information stays current and reflective of your professional journey.</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inner-container-body-img-box">
+                        <img src="assets/img/setting.svg" alt="">
+                        <p class="inner-container-img-text">Customizable Settings and Profiles</p>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+        <section class="container faq-container" id="faq">
+            <div class="inner-container">
+                <div class="inner-container-heading">
+                    <h2>FAQs About VinnTrack</h2>
+                </div>
+                <div class="inner-container-body">
+                    <div class="faq-col">
+                        <div class="faq-question">
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="faq-col">
+                        <div class="faq-question">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="container contact-container" id="contact">
+            
+        </section>
+    </main>
+    <footer>
+        <p>Copyright @VinnTrack</p>
+    </footer>
+</body>
+</html>

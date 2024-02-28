@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<style>
+	a {
+		text-decoration: none;	
+	}
+</style>
+<script>
+	$(document).ready(
+			function() {
+				function checkFields() {
+					var name = $("#name").val();
+					var salary = $("#salary").val();
+					if (name, salary) {
+						$(".form-button.save").prop('disabled', false)
+								.addClass('active');
+					} else {
+						$(".form-button.save").prop('disabled', true)
+								.removeClass('active');
+					}
+				}
+
+				$("#name, #salary").on("keyup change", function () {
+			        checkFields();
+			    });
+
+			    $('.nameEdit').on('input change', function () {
+			        var nameInput = $(this);
+			        var oriName = $("#deptName");
+			        var nameChanged = nameInput.val() !== oriName.val();
+			        if(nameChanged) {
+			        	$(".form-button.edit").prop('disabled', false).addClass('active');
+			        } else {
+						$(".form-button.save").prop('disabled', true)
+						.removeClass('active');
+					}
+			    
+			    });
+			    new DataTable('#example', {
+			        "lengthMenu": [3, 5, 10, 25],
+			        "pageLength": 5,
+			        initComplete: function () {
+			            this.api().columns().every(function () {
+			                let column = this;
+			                if (column.header().textContent !== 'Action' && column.header().textContent !== 'Total Number of Employee' && column.header().textContent !== 'No') {
+			                    let select = document.createElement('select');
+			                    let label = document.createElement('label');
+			                    label.textContent = column.header().textContent;
+			                    column.header().textContent = '';
+			                    column.header().appendChild(label);
+			                    select.add(new Option(''));
+			                    select.addEventListener('click', function (event) {
+			                        event.stopPropagation();
+			                    });
+			                    select.addEventListener('change', function () {
+			                        column.search(select.value, {exact: true}).draw();
+			                    });
+			                    column.data().unique().sort().each(function (d, j) {
+			                        select.add(new Option(d));
+			                    });
+			                    column.header().appendChild(select);
+			                }
+			            });
+			        }
+			    });
+
+
+
+
+
+
+			    
+			});
+</script>
+<title>VinnTrack - Add Position</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems"><i class="fa-solid fa-users"></i>
+					Employee <i class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown">
+					<li><a href="user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span> View
+								Employee</span></a></li>
+
+					<li><a href="user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span> Add
+								Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems"><i style="font-size: 24px;"
+					class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems" class="active"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>
+
+			<li><a href="profile" id="sidebarItems"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="login"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Position</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Position</a></li>
+			</ul>
+			<form method="POST" th:object="${positionDto}"
+				action="/position/save" class="form-container"
+				style="display: flex; box-shadow: none; flex-direction: row; justify-content: end; align-items: center; margin-top: 0px;">
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class='fa-solid fa-ranking-star'></i>
+						</div>
+						<input type="text" id="name" name="name" required="required"
+							autocomplete="off" class="text-input" placeholder="Name" /> <label
+							class="input-label" for="name">Name</label>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="fa-solid fa-coins"></i>
+						</div>
+						<input type="text" id="salary" name="salary" required="required"
+							autocomplete="off" class="text-input" placeholder="Salary" /> <label
+							class="input-label" for="salary">Salary</label>
+					</div>
+				</div>
+				<div class="form-btn mr-100">
+					<input class="form-button save" type="submit" value="Add" disabled>
+				</div>
+			</form>
+			<table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+            	<th>No</th>
+                <th>Position Name</th>
+                <th>Salary</th>
+                <th th:if="${session.currentUser.role == 'ADMIN'}">Employee</th>
+                <th th:if="${session.currentUser.role == 'CEO'}">Total Number of Employee</th>
+                <th th:if="${session.currentUser.role == 'ADMIN'}" style="text-align: center;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="position, index : ${positions}">
+            	<td th:text="${index.count}"></td>
+                <td th:text="${position.name}"></td>
+                <td th:text="'$' + ${position.salary}"></td>
+                <td th:text="${position.users.size()}"></td>
+                <td th:if="${session.currentUser.role == 'ADMIN'}" style="text-align: center;">
+                	<form th:id="'deleteForm_' + ${position.id}" action="/position/delete" method="post">
+		                <input type="hidden" name="id" th:value="${position.id}">
+		                <a class="editLink" style="color: blue; cursor: pointer;"> <i class="fa-solid fa-pen-to-square"></i></a>		                
+					</form>
+				</td>
+            </tr>
+        </tbody>
+    </table>
+
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+	</section>
+	<!-- CONTENT -->
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li
+				style="display: flex; justify-content: center; flex-direction: row;">
+				<button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button>
+			</li>
+		</ul>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.js"></script>
+
+
+
+	<script src="/assets/js/dashboardScript.js"></script>
+	<script>
+	</script>
+</body>
+</html>

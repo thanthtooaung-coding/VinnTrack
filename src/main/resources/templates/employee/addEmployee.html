@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script>
+		$(document).ready(function() {
+			$("#name").on("keyup", function() {
+				var nameVal = $(this).val();
+				$("#nickName").val(nameVal);
+				if (nameVal !== "") {
+					$("#nickName").addClass(
+							"readonly-populated");
+				} else {
+					$("#nickName").removeClass(
+							"readonly-populated");
+				}
+			});
+			function checkFields() {
+				var name = $("#name").val();
+				var email = $("#email").val();
+				var phone = $("#phone").val();
+				var department = $("#department").val();
+				var position = $("#position").val();
+				var gender = $("#gender").val();
+				var dob = $("input[name='dob']").val();
+				var address = $("#address").val();
+
+				if (name && email && phone && department
+						&& position && gender && dob && address) {
+					$(".form-button.save").prop('disabled', false).addClass('active');
+				} else {
+					$(".form-button.save").prop('disabled', true).removeClass('active');
+				}
+			}
+
+			$("#name, #email, #phone, #department, #position, #gender, input[name='dob'], #address").on("keyup change", function() {
+				checkFields();
+			});
+		});
+	</script>
+
+<title>VinnTrack - Add Employee</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems" class="active"><i
+					class="fa-solid fa-users"></i> Employee <i
+					class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown show">
+					<li><a href="/user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span> View
+								Employee</span></a></li>
+
+					<li><a href="/user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span class="active">
+								Add Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems"><i
+					style="font-size: 24px;" class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>				
+
+			<li><a href="profile" id="sidebarItems"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="login"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Employee</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#">Employee</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Add Employee</a></li>
+			</ul>
+			<form method="POST" th:object="${userDto}" action="save"
+				class="form-container" id="addUserForm">
+				<div class="form-title">
+					<h4>VinnTrack - New Employee Registration</h4>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class='bx bxs-user'></i>
+						</div>
+						<input type="text" id="name" name="name" required="required"
+							autocomplete="off" class="text-input" placeholder="Name" /> <label
+							class="input-label" for="name">Name</label>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class='bx bxs-user'></i>
+						</div>
+						<input type="text" id="nickName" name="username"
+							required="required" autocomplete="off" class="text-input"
+							placeholder="Username" readonly /> <label class="input-label"
+							for="nickName">Username</label>
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="bx bxs-envelope"></i>
+						</div>
+						<input type="email" id="email" name="email" required="required"
+							autocomplete="off" class="text-input" placeholder="Email" /> <label
+							class="input-label" for="email">Email</label>
+						<p id="error" th:text="${error}" style="color: var(--alert);"></p>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="fa-solid fa-square-phone"></i>
+						</div>
+						<input type="text" id="phone" name="phone" required="required"
+							autocomplete="off" class="text-input" placeholder="Phone Number" />
+						<label class="input-label" for="phone">Phone Number</label>
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="bx bxs-buildings"></i>
+						</div>
+						<select id="department" name="departmentId" required>
+							<option value="" label="Select department" disabled selected />
+							<option th:each="department, index : ${departments}"
+								th:value="${department.id}" th:text="${department.name}" />
+						</select>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="fa-solid fa-ranking-star"></i>
+						</div>
+						<select id="position" name="positionId" required>
+							<option value="" label="Select position" disabled selected />
+							<option th:each="position, index : ${positions}"
+								th:value="${position.id}" th:text="${position.name}" />
+						</select>
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="fa-solid fa-venus-mars"></i>
+						</div>
+						<select name="gender" id="gender" required>
+							<option value="null" disabled selected>Select gender</option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="others">Others</option>
+						</select>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class='bx bx-calendar'></i>
+						</div>
+						<input type="date" name="dob" required="required"
+							autocomplete="off" class="text-input" placeholder="Date of birth" />
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom address">
+						<div class="icon">
+							<i class="fa-solid fa-house"></i>
+						</div>
+						<input type="text" name="address" id="address" required="required"
+							autocomplete="off" class="text-input" placeholder="Address" /> <label
+							class="input-label" for="address">Address</label>
+					</div>
+				</div>
+				<div class="form-btn mr-100">
+					<input class="form-button cancel" type="button"
+						id="form-cancel-btn" value="Cancel"> <input
+						class="form-button save" id="saveEmpBtn" type="submit" value="Add" disabled>
+				</div>
+			</form>
+
+			<div class="add-extra-text">
+				Click here to <a href="#" class="learn-more">view</a> employee
+				details.
+			</div>
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+	</section>
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li><button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button></li>
+		</ul>
+	</div>	
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			var departmentSelectBox = document.getElementById("department");
+			if (departmentSelectBox) {
+				departmentSelectBox.selectedIndex = 0;
+			}
+			var positionSelectBox = document.getElementById("position");
+			if (positionSelectBox) {
+				positionSelectBox.selectedIndex = 0;
+			}
+			var genderSelectBox = document.getElementById("gender");
+			if (genderSelectBox) {
+				genderSelectBox.selectedIndex = 0;
+			}
+		});
+		
+		document.getElementById('email').addEventListener('keyup', function(event) {
+		    let email = event.target.value;
+		    fetch('/user/checkEmail?email=' + email, {
+		        method: 'POST'
+		    }).then(response => {
+		        if (response.ok) {
+		            document.getElementById('error').textContent = '';		            
+		        } else {
+		            return response.text();
+		        }
+		    }).then(error => {
+		        document.getElementById('error').textContent = error;		        
+		    });
+		});
+
+	</script>
+	<script src="/assets/js/dashboardScript.js"></script>
+</body>
+</html>

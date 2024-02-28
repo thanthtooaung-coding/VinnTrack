@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+<style>
+.modal-card {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 300;
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 40%;
+}
+
+/* The Close Button */
+.close {
+	color: #aaaaaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.deleteLink {
+	color: var(--alert);
+}
+
+.deleteLink:hover {
+	color: red;
+	text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+	.modal-content {
+		width: 80%;
+	}
+}
+</style>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script>
+	$(document).ready(
+			function() {
+				function checkFields() {
+					var name = $("#name").val();
+					if (name) {
+						$(".form-button.save").prop('disabled', false)
+								.addClass('active');
+					} else {
+						$(".form-button.save").prop('disabled', true)
+								.removeClass('active');
+					}
+				}
+
+				$("#name").on("keyup change", function () {
+			        checkFields();
+			    });
+
+			    $('.nameEdit').on('input change', function () {
+			        var nameInput = $(this);
+			        var oriName = $("#deptName");
+			        var nameChanged = nameInput.val() !== oriName.val();
+			        if(nameChanged) {
+			        	$(".form-button.edit").prop('disabled', false).addClass('active');
+			        } else {
+						$(".form-button.save").prop('disabled', true)
+						.removeClass('active');
+					}
+			    
+			    });
+			});
+</script>
+<title>VinnTrack - Add Department</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems"><i class="fa-solid fa-users"></i>
+					Employee <i class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown">
+					<li><a href="user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span> View
+								Employee</span></a></li>
+
+					<li><a href="user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span> Add
+								Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems" class="active"><i
+					style="font-size: 24px;" class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>
+
+			<li><a href="profile" id="sidebarItems"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="login"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Department</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Department</a></li>
+			</ul>
+			<form th:if="${session.currentUser.role == 'ADMIN'}" method="POST" th:object="${departmentDto}"
+				action="/department/save" class="form-container"
+				style="display: flex; box-shadow: none; flex-direction: row; justify-content: end; align-items: center; margin-top: 0px; margin-bottom: 0px;">
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom address">
+						<div class="icon">
+							<i class='bx bxs-buildings'></i>
+						</div>
+						<input type="text" id="name" name="name" required="required"
+							autocomplete="off" class="text-input" placeholder="Name" /> <label
+							class="input-label" for="name">Name</label>
+					</div>
+				</div>
+				<div class="form-btn mr-100">
+					<input class="form-button save" type="submit" value="Add" disabled>
+				</div>
+			</form>
+			<div class="information" style="z-index: 0;">
+				<form class="card" id="openCard" action="/department/delete"
+					th:each="department, index : ${departments}"
+					th:id="'card-' + ${index}" style="cursor: pointer;" method="post">
+					<input type="hidden" name="id" th:value="${department.id}" />
+					<div class="card-header"
+						style="display: flex; justify-content: space-between;">
+						<div class="icon-box box-2" title="You can see details in Employee/view Employee page.">
+							<i class='bx bxs-user'><span th:text="${department.users.size()}"></span></i>
+						</div>
+						<div class="card-details">
+							<p>
+								<strong id="deptName" th:text=${department.name}></strong>								
+							</p>							
+							<p th:if="${session.currentUser.role == 'ADMIN'}" style="font-size : 14px;"><span class="deleteLink" style="color: var(--alert);">Delete</span></p>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div id="myModal" class="modal-card"
+				th:each="department, index : ${departments}"
+				th:id="'modal-' + ${index}">
+				<!-- Modal content -->
+				<form action="/department/edit" class="modal-content" th:object="${departmentDto}" method="post">
+					<input type="hidden" name="id" th:value="${department.id}" />
+					<span class="close">&times;</span>
+					<p><strong style="font-size: 20px;">Edit Department Name</strong></p>
+					<br>					
+					<div class="input-box-container">
+						<div class="input-box inputbox-border-bottom address">
+							<div class="icon">
+								<i class='bx bxs-buildings'></i>
+							</div>
+							<input type="text" name="name" th:value="${department.name}"
+								required="required" autocomplete="off"
+								class="text-input nameEdit" placeholder="Name"
+								style="width: 100%" /> <label class="input-label" for="name">Name</label>
+						</div>
+					</div>
+					<div class="form-btn mr-100">
+						<input class="form-button edit" type="submit" value="Save"
+							disabled>
+					</div>
+				</form>
+			</div>
+
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+	</section>
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li
+				style="display: flex; justify-content: center; flex-direction: row;">
+				<button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button>
+			</li>
+		</ul>
+	</div>
+	<script>
+		// Get the button that opens the modal
+		var btns = document.querySelectorAll('.card');
+	
+		// Get the modals
+		var modals = document.querySelectorAll('.modal-card');
+	
+		// Get the <span> element that closes the modal
+		var spans = document.querySelectorAll('.close');
+	
+		// Loop through each button and add a click event listener
+		btns.forEach((btn, index) => {
+		    btn.addEventListener('click', function() {
+		        // Open the corresponding modal
+		        modals[index].style.display = "block";
+		    });
+		});
+	
+		// Loop through each span and add a click event listener
+		spans.forEach((span, index) => {
+		    span.addEventListener('click', function() {
+		        // Close the corresponding modal
+		        modals[index].style.display = "none";
+		    });
+		});
+	
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(event) {
+		    modals.forEach((modal) => {
+		        if (event.target == modal) {
+		            modal.style.display = "none";
+		        }
+		    });
+		};
+		// Get the delete links
+		var deleteLinks = document.querySelectorAll('.deleteLink');
+
+		// Loop through each delete link and add a click event listener
+		deleteLinks.forEach((deleteLink) => {
+		    deleteLink.addEventListener('click', function(event) {
+		        // Stop the propagation of the event
+		        event.stopPropagation();
+		        var result = confirm("Are you sure you want to delete?");
+
+		        // If the user clicks "Yes", proceed with the deletion
+		        if (result) {
+		            // Get the form element containing the delete link
+		            var form = deleteLink.closest('form');
+
+		            // Submit the form
+		            form.submit();
+		        }
+		    });
+		});
+
+
+	</script>
+	<script src="/assets/js/dashboardScript.js"></script>	
+</body>
+</html>

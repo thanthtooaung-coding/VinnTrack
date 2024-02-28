@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/attendance.css">
+<link rel="stylesheet" href="/assets/css/profileStyle.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+<title>VinnTrack - Profile</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems"><i class="fa-solid fa-users"></i>
+					Employee <i class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown">
+					<li><a href="user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span> View
+								Employee</span></a></li>
+
+					<li><a href="user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span> Add
+								Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems"><i
+					style="font-size: 24px;" class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>
+
+			<li><a href="profile" id="sidebarItems" class="active"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="login"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Profile</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Profile</a></li>
+			</ul>			
+			
+			<div class="profile-information">                              
+                <div class="user-information">
+                    <div class="user-info-box profile-photo-information margin-bottom-4">
+                        <div class="inner-profile-group">
+                            <div class="user-profile-photo-group">
+                                <img
+				        			th:src="@{'/images/' + ${profileUser.imageOutput}}" 
+				        			alt="Your avatar">
+                                <form th:object="${userDto}" action="updateProfileImage" id="uploadForm" method="post" class="upload-photo-form" enctype="multipart/form-data">
+								    <input name="image" type="file" class="profile-upload" title="Click to upload profile picture" onchange="submitForm()">
+								</form>
+							</div>
+								<script>
+								    function submitForm() {
+								        document.getElementById("uploadForm").submit();
+								    }
+								</script>
+							                            
+                            <h2 class="username-profile" th:text="${profileUser.username}"></h2>
+                            <div th:if="${session.currentUser.role != 'CEO'}" class="user-profile-headline-text">
+                                <span class="position-extra" th:text="${profileUser.position.name} + ' @vinntrack'"></span>                                
+                                <span class="location">
+                                    <i class="fa-solid fa-location-dot"></i><span th:text="${profileUser.address}"></span>
+                                </span>                                
+                            </div>
+                            <div th:if="${session.currentUser.role == 'CEO'}" class="user-profile-headline-text">
+                                <span class="position-extra" th:text="'Chief Executive Officer @vinntrack'"></span>                                
+                                <span class="location">
+                                    <i class="fa-solid fa-location-dot"></i> <span th:text="${profileUser.address}"></span>
+                                </span>                                
+                            </div>
+                            <span class="position-extra">Manage your info, privacy, and security to make <span style="color: #0C5FCD; font-weight: 700;">VinnTrack</span> work better for you. <a href="#" class="learn-more">Learn more</a></span>
+                        </div>
+                        
+                        
+                    </div>
+                    <!-- Basic Info -->
+                    <div class="user-info-box basic-information margin-bottom-4">
+                        <table>
+                            <thead for="info-content">
+                                <tr>
+                                    <th colspan="3" class="user-info-box-title">Basic Infomation</th>                                
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="take-info-notify-text">Some info may be visible to admin and CEO using VinnTrack services.</th>                                
+                                </tr>
+                            </thead>
+                            <tbody class="user-info-body">
+                                <tr id="user-info-1">
+                                    <th class="border">Name</th>
+                                    <td class="border" id="user-name"><span class="user-data-from-db"  th:text="${profileUser.name}"></span></td>
+                                    <td class="go-form border">
+                                        <i class="fa-solid fa-gear" onclick="toggleForm('form-row-1')"></i>
+                                    </td>
+                                </tr>
+                                <tr class="form-row form-row-1">
+                                    <td colspan="3">
+                                        <form action="updateProfileName" th:object="${userDto}" method="post" class="edit-form border">
+                                            <div class="form-title">
+                                                <span>Changes to your name will be reflected across your VinnTrack Account. <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <!-- Input box for username -->
+                                            <div class="input-box-container">
+                                                <div class="input-box inputbox-border-bottom">
+                                                    <div class="icon">
+                                                        <i class='bx bxs-user'></i>
+                                                    </div>
+                                                    <input type="text" name="name" id="formName" required="required" autocomplete="off" class="text-input"/>
+                                                    <label class="input-label" for="form-name">Name</label>
+                                                </div>
+                                                <div class="input-box inputbox-border-bottom">
+                                                    <div class="icon">
+                                                        <i class='bx bxs-user'></i>
+                                                    </div>
+                                                    <input type="text" id="formNickname" required="required" autocomplete="off" class="text-input" th:value="${profileUser.username}" focus onmousedown="return false;" onselectstart="return false;" oncontextmenu="return false;"/>
+
+
+                                                    <label class="input-label" for="form-nickname">Username</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your name?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-1')">
+                                                <input class="form-button save" type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                                                                
+                                    </td>
+                                </tr>
+                                <tr th:if="${session.currentUser.role != 'CEO'}" id="user-info-2">
+                                    <th class="border">Department</th>
+                                    <td class="border"><span class="user-data-from-db" th:text="${profileUser.department.name}"></span></td>
+                                    <td class="go-form border"><i class="fa-solid fa-gear" onclick="toggleForm('form-row-2')"></i></td>
+                                </tr>
+                                <tr th:if="${session.currentUser.role != 'CEO'}" class="form-row form-row-2">
+                                    <td colspan="3">
+                                        <div action="" class="edit-form border">
+                                            <div class="form-title">
+                                                <span>Currently in "<span id="output-data"></span>." <a href="#" class="learn-more">Learn more</a></span>
+                                                <br> Enhance your experience:<button class="hide-button valid-btn" onclick="hide('form-row-2')">Hide Details</button>
+                                            </div>
+                                            <!-- Input box for username -->
+                                            <div class="input-box-container" style="display: none;">
+                                                <div class="input-box">
+                                                    <div class="icon">
+                                                        <i class='bx bxs-user'></i>
+                                                    </div>
+ 
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your department?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-2')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="user-info-3">
+                                    <th class="border">Birthday</th>
+                                    <td class="border">
+									    <span id="monthFromDb" th:text="${#temporals.format(profileUser.dob, 'MMMM')}"></span>
+									    <span id="dateFromDb" th:text="${#temporals.format(profileUser.dob, 'dd')}"></span>,
+									    <span id="yearFromDb" th:text="${#temporals.format(profileUser.dob, 'yyyy')}"></span>
+									</td>
+
+
+
+
+                                    <td class="go-form border"><i class="fa-solid fa-gear" onclick="toggleForm('form-row-3')"></i></td>
+                                </tr>
+                                <tr class="form-row form-row-3">
+                                    <td colspan="3">
+                                        <form action="" class="edit-form border">
+                                            <div class="form-title">
+                                                <span>Your birthday may be used for account security and personalization across VinnTrack services. If this VinnTrack Account is for a business or organization, use the birthday of the person who manages the account. <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <!-- Input box for username -->
+                                            <div class="input-box-container">
+                                                <div class="input-box inputbox-border-bottom">
+                                                    <div class="icon">
+                                                        <i class='bx bx-calendar'></i>
+                                                    </div>
+                                                    <select name="month" id="month"></select>
+                                                    <label class="input-label" for="form-month">Month</label>
+                                                </div>
+                                                <div class="input-box inputbox-border-bottom">
+                                                    <div class="icon">
+                                                        <i class='bx bx-calendar'></i>
+                                                    </div>
+                                                    <input type="text" name="formDate" id="formDate" required autocomplete="off" class="text-input">
+                                                    <label class="input-label" for="form-date">Day</label>
+                                                </div>
+                                                <div class="input-box inputbox-border-bottom">
+                                                    <div class="icon">
+                                                        <i class='bx bx-calendar'></i>
+                                                    </div>
+                                                    <input type="text" name="formYear" id="formYear" required autocomplete="off" class="text-input">
+                                                    <label class="input-label" for="form-year">Year</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your birthday?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="common-form-text">
+                                                <span class="see-what">Let people know it's your birthday</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-cake-candles"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>If you make your birthday public, VinnTrack will notify all other users that it is your birthday.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="bd-extra-event">
+                                                <input type="checkbox" value="public">
+                                                <label for="public-check">Public your Birthday</label>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-3')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr id="user-info-4">
+                                    <th>Gender</th>
+                                    <td><span class="genderFromDb" id="genderFromDb" style="text-transform: capitalize;" th:text="${profileUser.gender}">Male</span>
+                                    <td class="go-form"><i class="fa-solid fa-gear" onclick="toggleForm('form-row-4')"></i></td>
+                                </tr>
+                                <tr class="form-row form-row-4">
+                                    <td colspan="3">
+                                        <form action="" th:object="${userDto}" class="edit-form border-top">
+                                            <div class="form-title">
+                                                <span>Your gender may be used for personalization across VinnTrack services, including how we refer to you. <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <!-- Input box for username -->
+                                            <div class="input-box-container">
+                                                <div class="input-box">
+                                                    <div class="icon">
+                                                        <i class="fa-solid fa-venus"></i>
+                                                    </div>
+                                                    <input type="radio" name="gender" class="formGender text-input" required autocomplete="off" th:class="text-input" value="female" th:checked="${profileUser.gender == 'female'}">
+                                                    <label class="input-label gender" for="form-gender">Female</label>
+                                                </div>
+                                                <div class="input-box">
+                                                    <div class="icon">
+                                                        <i class="fa-solid fa-mars"></i>
+                                                    </div>
+                                                    <input type="radio" name="gender" class="formGender text-input" required autocomplete="off" th:class="text-input" value="male" th:checked="${profileUser.gender == 'male'}">
+                                                    <label class="input-label gender" for="form-gender"> Male</label>
+                                                </div>
+                                                <div class="input-box">
+                                                    <div class="icon">
+                                                        <i class="fa-solid fa-question"></i>
+                                                    </div>
+                                                    <input type="radio" name="gender" class="formGender text-input" required autocomplete="off" th:class="text-input" value="rather-not-say" th:checked="${profileUser.gender == 'others'}">
+                                                    <label class="input-label gender" for="form-gender">Others </label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your gender?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-4')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Contact Info -->
+                    <div class="user-info-box contact-information margin-bottom-4">
+                        <table>
+                            <thead for="info-content">
+                                <tr>
+                                    <th colspan="3" class="user-info-box-title">Contact Infomation</th>                                
+                                </tr>
+                            </thead>
+                            <tbody class="user-info-body">
+                                <tr id="user-info-5">
+                                    <th class="border">Email</th>
+                                    <td class="border"><span class="user-data-from-db" th:text="${profileUser.email}"></span></td>
+                                    <td class="go-form border">
+                                        <i class="fa-solid fa-gear" onclick="toggleForm('form-row-5')"></i>
+                                    </td>
+                                </tr>
+                                <tr class="form-row form-row-5">
+                                    <td colspan="3">
+                                        <form action="editEmail" modelAttribute="employee" method="post" class="edit-form border">
+                                            <div class="form-title">
+                                                <span>Use your email for account recovery, so you can get account security alerts and reset your password if you forget it <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <!-- Input box for username -->
+                                            <div class="input-box-container">
+                                                <div class="input-box inputbox-border-bottom email"> 
+                                                    <div class="icon">
+                                                        <i class='bx bxs-envelope'></i>
+                                                    </div>
+                                                    <input type="email" path="email" id="formEmail" required="required" autocomplete="off" class="text-input"/>
+                                                    <label class="input-label" for="form-email">Email</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your Email?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-5')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr id="user-info-6">
+                                    <th>Phone</th>
+                                    <td><span class="user-data-from-db" th:text="${profileUser.phone}"></span></td>
+                                    <td class="go-form"><i class="fa-solid fa-gear" onclick="toggleForm('form-row-6')"></i></td>
+                                </tr>
+                                <tr class="form-row form-row-6">
+                                    <td colspan="3">
+                                        <form action="editPhone" modelAttribute="employee" method="post" class="edit-form">
+                                            <div class="form-title">
+                                                <span>Changes to your phone number will be reflected across your VinnTrack Account. <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <!-- Input box for username -->
+                                            <div class="input-box-container">
+                                                <div class="input-box inputbox-border-bottom email"> 
+                                                    <div class="icon">
+                                                        <i class="fa-solid fa-phone"></i>
+                                                    </div>
+                                                    <input type="text" path="phoneNumber" id="formPhone" required="required" autocomplete="off" class="text-input"/>
+                                                    <label class="input-label" for="form-phone">Phone Number</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your phone number?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-6')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Other Info -->
+                    <div class="user-info-box others margin-bottom-4">
+                        <table>
+                            <thead for="info-content">
+                                <tr>
+                                    <th colspan="3" class="user-info-box-title">Other Information</th>                                
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="take-info-notify-text">You can also add address, NRC and education to your VinnTrack Profile. You can choose if others see your profile addresses.</th>                                
+                                </tr>
+                            </thead>
+                            <tbody class="user-info-body">
+                                <tr id="user-info-7">
+                                    <th class="border">Address</th>
+                                    <td class="border"><span class="user-data-from-db" th:text="${profileUser.address}"></span></td>
+                                    <td class="go-form border"><i class="fa-solid fa-gear" onclick="toggleForm('form-row-7')"></i></td>
+                                </tr>
+                                <tr class="form-row form-row-7">
+                                    <td colspan="3">
+                                        <form action="editAddress" modelAttribute="employee" method="post" class="edit-form border">
+                                            <div class="form-title">
+                                                <span>Changes to your address will be reflected across your VinnTrack Account. <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <!-- Input box for username -->
+                                            <div class="input-box-container">
+                                                <div class="input-box inputbox-border-bottom email"> 
+                                                    <div class="icon">
+                                                        <i class="fa-solid fa-house"></i>
+                                                    </div>
+                                                    <input type="text" path="address" id="formAddress" required="required" autocomplete="off" class="text-input"/>
+                                                    <label class="input-label" for="form-address">Address</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your address?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-7')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr id="user-info-8">
+                                    <th class="border">Education</th>
+                                    <td class="border"><span class="user-data-from-db">ITPEC (FE Pass)</span></td>
+                                    <td class="go-form border"><i class="fa-solid fa-gear" onclick="toggleForm('form-row-8')"></i></td>
+                                </tr>
+                                <tr class="form-row form-row-8">
+                                    <td colspan="3">
+                                        <form action="" class="edit-form border">
+                                            <div class="form-title">
+                                                <span>Coming Soon... <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your education?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-8')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr id="user-info-9">
+                                    <th>NRC</th>
+                                    <td><span class="user-data-from-db">12 / BABABA (N) 123456</span></td>
+                                    <td class="go-form"><i class="fa-solid fa-gear" onclick="toggleForm('form-row-9')"></i></td>
+                                </tr>
+                                <tr class="form-row form-row-9">
+                                    <td colspan="3">
+                                        <form action="" class="edit-form">
+                                            <!-- <div class="form-title">
+                                                <span>Changes to your NRC will be reflected across your VinnTrack Account. <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <div class="input-box-container">
+                                                <div class="input-box inputbox-border-bottom email"> 
+                                                    <div class="icon">
+                                                        <i class="fa-solid fa-id-card"></i>
+                                                    </div>
+                                                    <input type="text" name="formNRC" id="formNRC" required autocomplete="off" class="text-input">
+                                                    <label class="input-label" for="form-nrc">NRC</label>
+                                                </div>
+                                            </div> -->
+                                            <div class="form-title">
+                                                <span>Coming Soon... <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your NRC?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-9')">
+                                                <input class="form-button save" disabled type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="user-info-box others margin-bottom-4">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="3" class="user-info-box-title">Password</th>                                
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="take-info-notify-text">A secure password helps protect your VinnTrack Account.</th>
+                                </tr>
+                            </thead>                            
+                            <tbody class="user-info-body">
+                                <tr id="user-info-10">
+                                    <th>Password</th>
+                                    <td id="user-name"><span class="user-data-from-db">*****</span></td>
+                                    <td class="go-form">
+                                        <i class="fa-solid fa-gear" onclick="toggleForm('form-row-10')"></i>
+                                    </td>
+                                </tr>
+                                <tr class="form-row form-row-10">
+                                    <td colspan="3">
+                                        <form action="changePassword" method="post" class="edit-form" id="passwordForm">
+                                            <div class="form-title">
+                                                <span>Changes to your password will be reflected across your VinnTrack Account. <a href="#" class="learn-more">Learn more</a></span>
+                                            </div>
+                                            <!-- Input box for password -->
+                                            <div class="input-box-container">
+                                                <div class="input-box inputbox-border-bottom">
+                                                    <div class="icon">
+                                                        <i class='bx bxs-key'></i>
+                                                    </div>
+                                                    <input type="text" path="name" hidden="hidden"/>
+                                                    <input type="password" path="password" id="formPassword" class="text-input"/>                                                    
+                                                    <label class="input-label" for="form-name">Current Password</label>
+                                                </div>
+                                                <div class="input-box inputbox-border-bottom">
+                                                    <div class="icon">
+                                                        <i class='bx bxs-key'></i>
+                                                    </div>
+                                                    <input type="password" path="confirmPassword" id="formConfirmPassword" class="text-input"/>
+                                                    <label class="input-label" for="form-nickname">Confirm Password</label>
+                                                    <div id="passwordError" class="error-message">${errorPassword}</div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="common-form-text">
+                                                <span class="see-what">Who can see your name?</span>
+                                                <div class="see-whom">
+                                                    <span>
+                                                        <i class="fa-solid fa-users"></i>
+                                                    </span>
+                                                    <div class="see-whom-loop">
+                                                        <span>This information is visible to Admin and CEO during attendance and leave management in VinnTrack Services. <a href="#" class="learn-more">Learn more</a></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-btn">
+                                                <input class="form-button cancel" type="button" id="form-cancel-btn" value="Cancel" onclick="toggleForm('form-row-10')">
+                                                <input class="form-button save" type="submit" value="Save">
+                                            </div>
+                                            <!-- <span id="output-data"></span> -->
+                                        </form>
+                                                                                
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                   </div>
+                </div>                
+            </div>
+			
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+		<!-- MAIN -->
+	</section>
+	<!-- FOOTER -->
+	<!-- END FOOTER -->
+
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li><button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button></li>
+		</ul>
+	</div>
+	<script src="/assets/js/dashboardScript.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        
+    });
+    
+</script>
+</body>
+</html>

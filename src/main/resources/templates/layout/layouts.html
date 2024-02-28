@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<!-- NAVBAR -->
+	<nav>
+		<i class='bx bx-menu toggle-sidebar'></i>
+		<p th:if="${session.currentUser.role == 'ADMIN'}" class="session-text">
+			Welcome Back <strong style="color: #0C5FCD;">HR Admin</strong>.
+		</p>
+		<p th:if="${session.currentUser.role == 'EMPLOYEE'}"
+			class="session-text">
+			Welcome Back <strong style="color: #0C5FCD;" th:text="${session.currentUser.name}"></strong>
+		</p>
+		<p th:if="${session.currentUser.role == 'CEO'}" class="session-text">
+			Welcome Back <strong style="color: #0C5FCD;">CEO</strong>.
+		</p>
+		<a href="#" class="nav-link notifications">
+			<div class="notification-icon-group">
+				<i class="fa-solid fa-bell icon"></i> <span class="badge" th:text="${notificationCount}"></span>
+				<span class="tooltiptext" th:text="'You have ' + ${notificationCount} + ' notifications'"></span>
+			</div>
+			<div class="nav-link notification">
+				<ul class="noti-link">
+					<li class="noti-link-bar" style="position: relative;">
+						<h2 class="noti-title">Notifications</h2>
+						<p>
+							<i class="fa-solid fa-ellipsis menu-icon"></i>
+						<ul class="menu-link">
+							<li><span href="#" class="menu-text-group" id="read"><i
+									class="fa-solid fa-check"></i><span> Make as read all</span></span></li>
+							<li><span href="#" class="menu-text-group"><i
+									class="fa-solid fa-gear"></i><span> Notification
+										settings </span></span></li>
+							<li><span href="#" class="menu-text-group" id="removeBtn"><i
+									class="fa-solid fa-trash"></i> <span>Remove all
+										notifications </span></span></li>
+						</ul>
+						</p>
+
+					</li>
+					<li>
+						<ul>
+							<li th:each="notification, index : ${notifications}"
+								class="noti-text">
+								<div class="unread" id="unread"></div> <img
+								src="data:image/jpg;base64,${notification.employeeProfileImageString }"
+								alt="" class="noti-profile-img">
+								<p>
+									<span class="name"><!-- ${notification.employeeName} --></span> just
+									${notification.notificationType}<br> <span
+										onclick="window.location.href = 'notifications'; return false;"
+										class="noti-text-link">Click to see more</span>
+								</p>
+							</li>
+
+							<li class="noti-page-link-group"><span
+								class="noti-page-link">See all notifications</span></li>
+						</ul>
+					</li>
+
+				</ul>
+			</div>
+		</a> <a href="#" class="nav-link"> <span class="dark-light"> <i
+				class="bx bx-moon icon" style="font-size: 28px;"
+				onclick="darkmode()"></i> <span class="tooltiptext">Change
+					dark mode</span>
+		</span>
+		</a>
+		<div class="profile-group">
+			<span class="status"> <i class="fa-solid fa-circle"></i>
+			</span>
+			<div class="profile">
+				<img
+					th:src="@{'/images/' + ${session.currentUser.imageOutput}}" alt="profile-photo">
+				<ul class="profile-link">
+					<li><a href="/profile"><i
+							class='bx bxs-user-circle icon'></i> Profile</a></li>
+					<li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
+					<li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i>
+							Logout</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</nav>
+	<!-- NAVBAR -->
+</body>
+</html>

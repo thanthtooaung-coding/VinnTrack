@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/attendance.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<style>
+a {
+	text-decoration: none;
+}
+
+</style>
+<script>
+	$(document)
+			.ready(
+					function() {
+						new DataTable(
+								'#example',
+								{
+									"lengthMenu" : [ 3, 5, 10, 25 ],
+									"pageLength" : 5,
+									initComplete : function() {
+										this
+												.api()
+												.columns()
+												.every(
+														function() {
+															let column = this;
+															if (column.header().textContent === 'Date'
+																	|| column
+																			.header().textContent === 'Status') {
+																let select = document
+																		.createElement('select');
+																let label = document
+																		.createElement('label');
+																label.textContent = column
+																		.header().textContent;
+																column.header().textContent = '';
+																column
+																		.header()
+																		.appendChild(
+																				label);
+																select
+																		.add(new Option(
+																				''));
+																select
+																		.addEventListener(
+																				'click',
+																				function(
+																						event) {
+																					event
+																							.stopPropagation();
+																				});
+																select
+																		.addEventListener(
+																				'change',
+																				function() {
+																					column
+																							.search(
+																									select.value,
+																									{
+																										exact : true
+																									})
+																							.draw();
+																				});
+																column
+																		.data()
+																		.unique()
+																		.sort()
+																		.each(
+																				function(
+																						d,
+																						j) {
+																					select
+																							.add(new Option(
+																									d));
+																				});
+																column
+																		.header()
+																		.appendChild(
+																				select);
+															}
+														});
+									}
+								});
+					});
+</script>
+<title>VinnTrack - Attendance</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" class="active" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems"><i class="fa-solid fa-users"></i>
+					Employee <i class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown">
+					<li><a href="user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span> View
+								Employee</span></a></li>
+
+					<li><a href="user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span> Add
+								Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems"><i style="font-size: 24px;"
+					class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>
+
+			<li><a href="profile" id="sidebarItems"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="login"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Attendance</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Attendance</a></li>
+			</ul>
+
+			<form th:if="${session.currentUser.role == 'EMPLOYEE'}"
+				th:onsubmit="setDateTime()" action="/attendance/takeAttendance"
+				class="card"
+				style="display: flex; align-items: center; justify-content: end; height: 100%; margin-top: 36px;"
+				th:object="${attendanceDto}" method="post">
+				<div th:if="${session.currentUser.role == 'EMPLOYEE'}" id="clock"
+					style="text-align: center; font-size: 24px; margin-top: 20px;"></div>
+				<div id="done"></div>
+				<input type="hidden" th:field="*{timeInTest}" id="timeInTest" />
+				<div class="buttons" type="submit">
+					<button id="fingerprintBtn" class="blob-btn"
+						 style="margin-right: 60px;">
+						Take Attendance <span class="blob-btn__inner"> <span
+							class="blob-btn__blobs"> <span class="blob-btn__blob"></span>
+								<span class="blob-btn__blob"></span> <span
+								class="blob-btn__blob"></span> <span class="blob-btn__blob"></span>
+						</span>
+						</span>
+					</button>					
+					<br />
+					<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+            <defs>
+                <filter id="goo">
+                    <feGaussianBlur in="SourceGraphic" result="blur"
+							stdDeviation="10"></feGaussianBlur>
+                    <feColorMatrix in="blur" mode="matrix"
+							values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+                    <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+                </filter>
+            </defs>
+        </svg>
+				</div>
+			</form>
+			<script th:inline="javascript">
+				function setDateTime() {
+					var now = new Date();
+					var year = now.getFullYear();
+					var month = ('0' + (now.getMonth() + 1)).slice(-2);
+					var day = ('0' + now.getDate()).slice(-2);
+					var hour = ('0' + now.getHours()).slice(-2);
+					var minute = ('0' + now.getMinutes()).slice(-2);
+					var second = ('0' + now.getSeconds()).slice(-2);
+					var timeInTest = year + '-' + month + '-' + day + ' '
+							+ hour + ':' + minute + ':' + second;
+					document.getElementById('timeInTest').value = timeInTest;
+					document.getElementById('done').value = timeInTest;
+				}
+			</script>
+
+			<table th:if="${session.currentUser.role != 'EMPLOYEE'}" id="example"
+				class="table table-striped" style="width: 100%">
+				<thead>
+					<tr>
+						<th class="text-center">No.</th>
+						<th>Name</th>
+						<th>Time in</th>
+						<th>Time out</th>
+						<th>Date</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="attendance, index : ${allAttendances}">
+						<td class="text-center" th:text="${index.count}+'.'"></td>
+						<td th:text="${attendance.user.name}"></td>
+						<td th:text="${#dates.format(attendance.timeIn, 'HH:mm:ss a')}"></td>
+						<td th:text="${#dates.format(attendance.timeOut, 'HH:mm:ss a')}"></td>
+						<td th:text="${#temporals.format(attendance.date, 'MMM dd, yyyy (EEE)')}"></td>
+						<td th:text="${attendance.attendanceStatus}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+		<!-- MAIN -->
+	</section>
+	<!-- FOOTER -->
+	<!-- END FOOTER -->
+
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li><button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button></li>
+		</ul>
+	</div>
+	<script src="/assets/js/dashboardScript.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+	<script
+		src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.js"></script>
+	<script>		
+		function updateClock() {
+			var now = new Date();
+			var hours = now.getHours();
+			var minutes = now.getMinutes();
+			var seconds = now.getSeconds();
+			hours = ('0' + hours).slice(-2);
+			minutes = ('0' + minutes).slice(-2);
+			seconds = ('0' + seconds).slice(-2);
+			document.getElementById('clock').textContent = hours + ':'
+					+ minutes + ':' + seconds;
+		}
+		setInterval(updateClock, 1000);
+		updateClock();
+				
+	</script>
+</body>
+</html>

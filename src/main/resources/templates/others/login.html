@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VinnTrack - Login</title>
+<link rel="shortcut icon" href="assets/ico/logo.ico" type="image/x-icon">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="/assets/css/w3css.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="/assets/css/authentication.css">
+</head>
+<body>
+	<!-- Container for the login section -->
+	<div class="loginContainer" id="loginContainer">
+		<!-- Section containing the login form -->
+		<section id="loginSection">
+			<!-- Image box for branding -->
+			<div class="imgBox">
+				<img src="assets/img/login-emp-img.png" alt="">
+			</div>
+			<!-- Content box for the form -->
+			<div class="contentBox">
+				<!-- Form box for user login -->
+				<div class="formBox">
+					<!-- Headings for the form -->
+					<h3>Welcome Back from VinnTrack</h3>
+					<h2>Login</h2>
+					<!-- Actual login form -->
+					<form action="authenticate" method="POST" id="loginForm">
+
+						<!-- Input box for username -->
+						<div class="input-box inputbox-border-bottom address">
+							<div class="icon">
+								<i class="fa-solid fa-user"></i>
+							</div>
+							<input type="email" name="email" id="email" required="required"
+								autocomplete="off" class="text-input" placeholder="Email" /> <label
+								class="input-label" for="form-name" style="font-size: 16px;">Email</label>
+						</div>
+						<div class="input-box inputbox-border-bottom address">
+							<div class="icon">
+								<i class="fa-solid fa-lock"></i>
+							</div>
+							<input type="password" name="password" id="password"
+								required="required" autocomplete="off" class="text-input"
+								placeholder="Password" /> <label class="input-label"
+								for="form-name" style="font-size: 16px;">Password</label>
+						</div>
+						<!-- Error message display -->
+						<p th:text="${error}" class="errorMessage" id="errorMsg"></p>
+						<!-- Checkbox for remembering user -->
+						<div class="forgotPassword">
+							<label for=""> <a href="forgotPassword">Forgot Password?</a>
+							</label>
+						</div>
+						<!-- Submit button for the form -->
+						<div class="inputBox button">
+							<input type="submit" name="" id="" value="Sign in">
+						</div>
+						<!-- Terms and conditions link -->
+						<div class="terms-and-conditionBox">
+							<p>
+								By clicking <span style="color: #4070f4;">'Sign in'</span> you
+								accept our <a onclick="openTermsModal()">terms and
+									conditions</a> and <a onclick="openPolicyModal()">privacy and
+									policy</a>
+							</p>
+						</div>
+					</form>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<!-- Modal for terms and conditions -->
+	<div id="terms-and-condition-modal" class="w3-modal">
+		<!-- Content of the terms and conditions modal -->
+		<div class="w3-modal-content w3-card-4 w3-animate-zoom">
+			<header class="w3-container w3-blue">
+				<span onclick="closeTermsModal()"
+					class="w3-button w3-blue w3-xlarge w3-display-topright w3-hover-text-red">&times;</span>
+				<h3>Terms and Conditions</h3>
+			</header>
+
+			ghgh <br>ghgh <br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh
+
+			<div class="w3-container w3-white w3-padding">
+				<button
+					class="w3-right w3-green w3-border w3-margin-left btn btnAgree"
+					onclick="closeTermsModal()">Agree</button>
+				<button class="w3-right w3-border btn btnCancel"
+					onclick="closeTermsModal()">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<!-- Modal for privacy policy -->
+	<div id="privacy-policy-modal" class="w3-modal">
+		<!-- Content of the privacy policy modal -->
+		<div class="w3-modal-content w3-card-4 w3-animate-zoom">
+			<header class="w3-container w3-blue">
+				<span onclick="closePolicyModal()"
+					class="w3-button w3-blue w3-xlarge w3-display-topright w3-hover-text-red">&times;</span>
+				<h3>Privacy and Policy</h3>
+			</header>
+
+			ghgh <br>ghgh <br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh<br>ghgh
+
+			<div class="w3-container w3-white w3-padding">
+				<button
+					class="w3-right w3-green w3-border w3-margin-left btn btnAgree"
+					onclick="closePolicyModal()">Agree</button>
+				<button class="w3-right w3-border btn btnCancel"
+					onclick="closePolicyModal()">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<!-- Scripts for functionality -->
+	<script src="js/loginScript.js"></script>
+	<script src="/assets/js/authentication.js"></script>
+	<script src="js/forgotPasswordScript.js"></script>
+	<script src="js/otpVerificationScript.js"></script>
+</body>
+</html>

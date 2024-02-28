@@ -1,0 +1,339 @@
+@charset "UTF-8";
+@charset "UTF-8";
+/* loginStyle.css */
+/* Resetting default styles and setting font family */
+
+
+.container {
+    display: block;
+}
+
+/* Styling for the section */
+section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+
+/* Styling for the image box */
+section .imgBox {
+    position: relative;
+    width: 50%;
+    height: 100%;
+}
+
+/* section .imgBox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(225deg, #e91e63, #03a9f4);
+    background: linear-gradient(121.7deg, rgb(41, 116, 250) 22.9%, rgb(67, 212, 255) 69%);
+    z-index: 1;
+    mix-blend-mode: screen;
+} */
+
+section .imgBox img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Styling for the content box */
+section .contentBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+}
+
+/* Styling for the form box */
+section .contentBox .formBox {
+    width: 50%;
+}
+
+/* Styling for various elements inside the form */
+section .contentBox .formBox h3 {
+    color: #444;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    text-align: center;
+    font-weight: 500;
+}
+
+section .contentBox .formBox h2 {    
+    color: #444;
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    border-bottom: 4px solid #4e51fd;
+    display: inline-block;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+section .contentBox .formBox .inputBox {
+    margin-bottom: 20px;
+}
+
+section .contentBox .formBox .inputBox span {
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: inline-block;
+    color: #607d8b;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+section .contentBox .formBox .inputBox input {
+    width: 100%;
+    padding: 10px 20px;
+    outline: none;
+    font-weight: 400;
+    border: 1px solid #607d8b;
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #607d8b;
+    background: transparent;
+    border-radius: 30px;    
+}
+section .contentBox .formBox .inputBox .eye {
+    position: absolute;
+    top: 57%;
+    right: 13.5%;    
+    cursor: pointer;
+    font-size: 20px;
+}
+
+section .contentBox .formBox .inputBox input[type = "submit"] {
+    width: 30%;
+    background: #4e51fd;
+    color: #fff;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    
+}
+section .contentBox .formBox .inputBox.button {
+    display: flex;
+    text-align: center;
+    align-self: center;
+    justify-content: center;
+}
+
+section .contentBox .formBox .inputBox input[type = "submit"]:hover {
+    background: #3c3ff8;    
+}
+
+section .contentBox .formBox .forgotPassword {
+    margin-bottom: 15px;
+    text-align: right;
+    color: #607d8b;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+section .contentBox .formBox .forgotPassword a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+section .contentBox .formBox .terms-and-conditionBox {
+    text-align: center;
+}
+
+section .contentBox .formBox .terms-and-conditionBox p {
+    color: #607d8b;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+section .contentBox .formBox .terms-and-conditionBox p a {
+    color: #4e51fd;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+section .contentBox .formBox .terms-and-conditionBox p a:hover {
+    text-decoration: underline;
+}
+
+.errorMessage {
+    color: red;
+    margin: 20px 0px;
+}
+
+/* Responsive design for phone screen */
+@media (max-width: 768px) {
+    section .imgBox::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(225deg, #e91e63, #03a9f4);
+        background: linear-gradient(121.7deg, rgb(41, 116, 250) 22.9%, rgb(67, 212, 255) 69%);
+        z-index: 1;
+        mix-blend-mode: screen;
+    }
+    section .imgBox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    section .imgBox img{
+        display: none;
+    }
+    section .contentBox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    section .contentBox .formBox {
+        width: 100%;
+        padding: 40px;
+        background: rgb(255 255 255 / 0.9);
+        margin: 50px;        
+        border-radius: 16px;        
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+    section .contentBox .formBox h3 {
+        color: #444;
+        margin: 30px 0 10px;
+        text-align: center;
+    }
+    section .contentBox .formBox .inputBox input[type = "submit"] {
+        width: 100%;
+    }
+}
+/* loginModal.css */
+/* Styling for buttons in the modal */
+.btn {
+    color: #fff !important;
+    border: none;
+    display: inline-block;
+    padding: 8px 16px;
+    vertical-align: middle;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* Styling for cancel button */
+.btnCancel {
+    background: red !important;
+}
+
+/* Styling for hover effect on cancel button */
+.btnCancel:hover {
+    background: darkred !important;
+}
+
+/* Styling for agree button */
+.btnAgree {
+    background: green !important;
+}
+
+/* Styling for hover effect on agree button */
+.btnAgree:hover {
+    background: darkgreen !important;
+}
+/* otpVerificationStyle.css */
+.otpVerificationSection .contentBox .formBox {
+    padding: 40px;
+    background: rgb(255 255 255 / 0.9);    
+    border-radius: 16px;        
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+.otpVerificationSection .contentBox .formBox p {
+    color: #607d8b;
+    letter-spacing: 1px;
+}
+
+.otpVerificationSection .contentBox .formBox p a {
+    color: #4e51fd;
+    cursor: pointer;
+}
+
+.otpVerificationSection .contentBox .formBox p a:hover {
+    color: #3c3ff8;
+    text-decoration: underline;
+}
+
+.otpVerificationSection .contentBox .formBox header {
+    margin-left: 40%;
+    margin-bottom: 20px;
+}
+
+.otpVerificationSection .contentBox .formBox header .header{
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 65px;
+    width: 65px;
+    background: #4070f4;
+    color: #fff;
+    font-size: 40px;
+    border-radius: 50%;
+}
+
+.otpVerificationForm .input-field {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 20px
+    
+}
+
+.otpVerificationForm .input-field input {
+    height: 70px;
+    width: 70px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    
+    margin: 30px 0;
+}
+
+.otpVerificationForm .input-field input:focus {
+    box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+}
+
+.otpVerificationSection .contentBox .formBox .inputBox.button .otpBtn{
+    background: #6e93f7;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.otpVerificationSection .contentBox .formBox .inputBox.button .otpBtn.active {
+    background: #4070f4;
+    pointer-events: auto;
+}
+
+.otpVerificationSection .contentBox .formBox .inputBox.button .otpBtn:hover {
+    background: #3c3ff8;
+}

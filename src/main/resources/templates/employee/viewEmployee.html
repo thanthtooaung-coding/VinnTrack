@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="/assets/css/dashboardStyle.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<style>
+	a {
+		text-decoration: none;	
+	}
+	.modal-card {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 300;
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+	background-color: #fefefe;
+	margin: auto;	
+	padding: 20px;
+	border: 1px solid #888;
+	width: 60%;
+}
+
+/* The Close Button */
+.close {
+	color: #aaaaaa;
+	float: left;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+@media screen and (max-width: 768px) {
+	.modal-content {
+		width: 80%;
+	}
+}
+</style>
+<script>
+	$(document).ready(function() {
+		$("#name").on("keyup", function() {
+			var nameVal = $(this).val();
+			$("#nickName").val(nameVal);
+			if (nameVal !== "") {
+				$("#nickName").addClass(
+						"readonly-populated");
+			} else {
+				$("#nickName").removeClass(
+						"readonly-populated");
+			}
+		});
+		function checkFields() {
+			var name = $("#name").val();
+			var email = $("#email").val();
+			var phone = $("#phone").val();
+			var department = $("#department").val();
+			var position = $("#position").val();
+			var gender = $("#gender").val();
+			var dob = $("input[name='dob']").val();
+			var address = $("#address").val();
+
+			if (name && email && phone && department
+					&& position && gender && dob && address) {
+				$(".form-button.save").prop('disabled', false).addClass('active');
+			} else {
+				$(".form-button.save").prop('disabled', true).removeClass('active');
+			}
+		}
+
+		$("#name, #email, #phone, #department, #position, #gender, input[name='dob'], #address").on("keyup change", function() {
+			checkFields();
+		});
+	    new DataTable('#example', {
+	        "lengthMenu": [3, 5, 10, 25],
+	        "pageLength": 5,
+	        initComplete: function() {
+	            this.api().columns().every(function(index) {
+	            	let column = this;
+	                if (index > 0 && column.header().textContent !== 'Action') {
+	                    let column = this;
+	                    let select = document.createElement('select');
+	                    let label = document.createElement('label');
+	                    label.textContent = column.header().textContent;
+	                    column.header().replaceChildren(label);
+	                    select.add(new Option(''));
+	                    select.addEventListener('click', function(event) {
+	                        event.stopPropagation();
+	                    });
+	                    select.addEventListener('change', function() {
+	                        column.search(select.value, {
+	                            exact: true
+	                        }).draw();
+	                    });
+	                    column.data().unique().sort().each(function(d, j) {
+	                        select.add(new Option(d));
+	                    });
+	                    let div = document.createElement('div');
+	                    div.appendChild(select);
+	                    column.header().appendChild(div);
+	                }
+	            });
+	        }
+	    });
+	});
+
+</script>
+
+<title>VinnTrack - View Employee</title>
+</head>
+<body>
+	<div th:if="${session.currentUser == null}">
+		<script>
+			window.location.href = '/';
+		</script>
+	</div>
+	<!-- SIDEBAR -->
+	<section id="sidebar" class="sidebar">
+		<a href="#" class="brand"> <i class='bx bxl-vimeo'></i><span>VinnTrack</span>
+
+		</a>
+		<ul class="side-menu">
+			<li class="divider" data-text="main"></li>
+
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/dashboard" id="sidebarItems"><i
+					class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+
+			<li><a href="/attendance" id="sidebarItems"><i
+					class="fa-solid fa-clock icon"></i> Attendance</a></li>
+			<li><a href="leave" id="sidebarItems"><i
+					class="fa-solid fa-file-pen icon"></i> Leave</a></li>
+			<li class="divider" data-text="manage"></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="#" id="sidebarItems" class="active"><i
+					class="fa-solid fa-users"></i> Employee <i
+					class='bx bx-chevron-right icon-right'></i></a>
+				<ul class="side-dropdown show">
+					<li><a href="/user/view"><i
+							class="fa-solid fa-folder-tree icon"></i><span class="active"> View
+								Employee</span></a></li>
+
+					<li><a href="/user/add"><i
+							class="fa-solid fa-folder-plus icon"></i><span>
+								Add Employee</span></a></li>
+				</ul></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/department" id="sidebarItems"><i
+					style="font-size: 24px;" class='bx bxs-buildings'></i> Department</a></li>
+			<li th:if="${session.currentUser.role != 'EMPLOYEE'}"><a
+				href="/position" id="sidebarItems"><i
+					class="fa-solid fa-ranking-star"></i> Position</a></li>				
+
+			<li><a href="profile" id="sidebarItems"><i
+					class="fa-solid fa-circle-user"></i> Profile</a></li>
+			<li><a href="notifications" id="sidebarItems"><i
+					class="fa-solid fa-bell icon"></i> Notification</a></li>
+			<li class="divider" data-text="others"></li>
+			<li><a href="#"> <i class="fa-solid fa-circle-info"></i>
+					Help
+			</a></li>
+			<li class="signout" id="sidebarItems"><a href="login"
+				class="signout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Sign out
+			</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content" class="content">
+		<!-- NAVBAR -->
+		<div th:replace="~{layout/layouts :: nav}"></div>
+		<!-- NAVBAR -->
+		<!-- MAIN -->
+		<main>
+			<h1 class="title">Employee</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#">Employee</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">View Employee</a></li>
+			</ul>
+			
+			<table id="example" class="table table-striped" style="width:100%">
+		        <thead>
+		            <tr>
+		            	<th></th>
+		                <th>Name</th>
+		                <th>Position</th>
+		                <th>Department</th>
+		                <th style="text-align: right;">Age</th>
+		                <th>Joined date</th>
+		                <th>Phone</th>
+		                <th>Salary</th>
+		                <th th:if="${session.currentUser.role == 'ADMIN'}" style="text-align: right;">Action</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+				    <tr th:each="user, index : ${users}">
+				        <td><img style="width: 60px; height: 60px;" 
+				        th:src="@{'/images/' + ${user.image}}" 
+				        alt="Your avatar"></td>
+				        <td class="align-middle" th:text="${user.name}"></td>
+				        <td class="align-middle" th:text="${user.position.name}"></td>
+				        <td class="align-middle" th:text="${user.department.name}"></td>
+				        <td class="align-middle" th:text="${user.calculateAge()}"></td>
+				        <td class="align-middle" th:text="${user.joinDate}"></td>
+				        <td class="align-middle" th:text="${user.phone}"></td>
+				        <td class="align-middle" th:text="${user.position.salary}"></td>
+				        <td th:if="${session.currentUser.role == 'ADMIN'}" class="align-middle" style="text-align: center;">
+				            <form th:id="'deleteForm_' + ${user.id}" action="/user/delete" method="post">
+				                
+				                <!-- <i style="font-size: 20px;" class="fa-solid fa-ellipsis"></i> -->
+				                <a class="editLink" style="color: blue; cursor: pointer;"> <i class="fa-solid fa-pen-to-square"></i></a> |
+				                <a class="deleteLink" style="color: var(--alert); cursor: pointer;"> <i class="fa-solid fa-trash"></i></a>
+				            </form>
+				        </td>
+				    </tr>
+				</tbody>				
+		    </table>
+		    <div id="myModal" class="modal-card"
+				th:each="user, index : ${users}"
+				th:id="'modal-' + ${index}">
+				<!-- Modal content -->
+				<form action="/user/edit" class="modal-content" th:object="${userDto}" method="post">					
+					<div style="display : flex; align-items: center; justify-content: space-between;">
+						<p><strong style="font-size: 20px; padding: 20px">Edit Employee Here</strong></p>
+						<span style="padding: 20px" class="close">&times;</span>
+					</div>
+					
+					<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class='bx bxs-user'></i>
+						</div>
+						<input type="text" id="name" name="name" required="required" th:value="${user.name}"
+							autocomplete="off" class="text-input" placeholder="Name" /> <label
+							class="input-label" for="name">Name</label>
+							<input type="hidden" name="id" th:value="${user.id}" />
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class='bx bxs-user'></i>
+						</div>
+						<input type="text" id="nickName" name="username" th:value="${user.username}"
+							required="required" autocomplete="off" class="text-input" autofocus
+							placeholder="Username" disabled /> <label class="input-label"
+							for="nickName">Username</label>
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="bx bxs-envelope"></i>
+						</div>
+						<input type="email" id="email" name="email" required="required" th:value="${user.email}"
+							autocomplete="off" class="text-input" placeholder="Email" /> <label
+							class="input-label" for="email">Email</label>
+						<p id="error" th:text="${error}" style="color: var(--alert);"></p>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="fa-solid fa-square-phone"></i>
+						</div>
+						<input type="text" id="phone" name="phone" required="required" th:value="${user.phone}"
+							autocomplete="off" class="text-input" placeholder="Phone Number" />
+						<label class="input-label" for="phone">Phone Number</label>
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="bx bxs-buildings"></i>
+						</div>
+						<select id="department" name="departmentId" required th:field="*{departmentId}">
+							<option value="" label="Select department" disabled selected />
+							<option th:each="department, index : ${departments}" 
+								th:value="${department.id}" th:text="${department.name}"
+								th:selected="${department.id == userDto.departmentId}" />
+						</select>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="fa-solid fa-ranking-star"></i>
+						</div>
+						<select id="position" name="positionId" required th:field="*{positionId}">
+							<option value="" label="Select position" disabled selected />
+							<option th:each="position, index : ${positions}"
+								th:value="${position.id}" th:text="${position.name}" />
+						</select>
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class="fa-solid fa-venus-mars"></i>
+						</div>
+						<select name="gender" value="" id="gender" required th:field="*{gender}">
+							<option value="null" disabled selected>Select gender</option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="others">Others</option>
+						</select>
+					</div>
+					<div class="input-box inputbox-border-bottom">
+						<div class="icon">
+							<i class='bx bx-calendar'></i>
+						</div>
+						<input type="date" name="dob" required="required" th:value="${user.dob}"
+							autocomplete="off" class="text-input" placeholder="Date of birth" />
+					</div>
+				</div>
+				<div class="input-box-container">
+					<div class="input-box inputbox-border-bottom address">
+						<div class="icon">
+							<i class="fa-solid fa-house"></i>
+						</div>
+						<input type="text" name="address" id="address" required="required" th:value="${user.address}"
+							autocomplete="off" class="text-input" placeholder="Address" /> <label
+							class="input-label" for="address">Address</label>
+					</div>
+				</div>
+			
+					<div class="form-btn mr-100">
+						<input class="form-button edit active" type="submit" value="Save"
+							>
+					</div>
+				</form>
+			</div>
+		</main>
+		<footer class="footer">
+			<p>Footer</p>
+		</footer>
+	</section>
+	<!-- CONTENT -->
+	<div class="modal-group" id="remove-modal-group">
+		<ul class="modal" id="remove-modal">
+			<li><h4 href="#">Are you sure want to remove all the
+					notifications?</h4></li>
+			<li><button class="yes">yes</button>
+				<button class="no" id="cancelBtnRemove">no</button></li>
+		</ul>
+	</div>	
+	<script src="/assets/js/dashboardScript.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.js"></script>
+	<script>
+		document.querySelectorAll('.deleteLink').forEach(deleteLink => {
+	        deleteLink.addEventListener('click', function(event) {
+	            event.preventDefault();
+	            event.stopPropagation();
+	            var result = confirm("Are you sure you want to delete?");
+	            if (result) {
+	                var form = deleteLink.closest('form');
+	                form.submit();
+	            }
+	        });	        
+	    });		
+		var btns = document.querySelectorAll('.editLink');
+		var modals = document.querySelectorAll('.modal-card');
+		var spans = document.querySelectorAll('.close');
+	
+		btns.forEach((btn, index) => {
+		    btn.addEventListener('click', function() {
+		        modals[index].style.display = "block";
+		    });
+		});
+	
+		spans.forEach((span, index) => {
+		    span.addEventListener('click', function() {
+		        modals[index].style.display = "none";
+		    });
+		});
+	
+		window.onclick = function(event) {
+		    modals.forEach((modal) => {
+		        if (event.target == modal) {
+		            modal.style.display = "none";
+		        }
+		    });
+		};
+	</script>
+</body>
+</html>

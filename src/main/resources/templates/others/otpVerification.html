@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Title for the web page -->
+<title>VinnTrack - OTP Verification</title>
+<!-- Link to the modal CSS -->
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+	rel="stylesheet" />
+<!-- Shortcut icon for the web page -->
+<link rel="shortcut icon" href="/assets/ico/logo.ico"
+	type="image/x-icon">
+<!-- Links to style sheet files for styling -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="/assets/css/w3css.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/addForm.css">
+<link rel="stylesheet" href="/assets/css/authentication.css">
+</head>
+<body>
+	<div th:if="${session.forgotUser == null}">
+		<script>
+			window.location.href = '/forgotPassword';
+		</script>
+	</div>
+	<!-- Container for the login section -->
+	<div class="loginContainer" id="loginContainer">
+		<section class="otpVerificationSection" id="otpVerificationSection">
+			<!-- Image box for branding -->
+			<div class="imgBox">
+				<img src="assets/img/otpVerification.png" alt="">
+			</div>
+			<!-- Content box for the form -->
+			<div class="contentBox">
+				<!-- Form box for forgot password -->
+				<div class="formBox">
+					<!-- Heading for the form -->
+					<header>
+						<div class="header">
+							<i class="bx bxs-check-shield"></i>
+						</div>
+					</header>
+
+					<h2 style="border: none;">Enter OTP Code</h2>
+					<div class="successBox">
+						<p>A 4 digit code has been sent to your email address.</p>						
+					</div>
+					<!-- Form for email input and submit button -->
+					<form class="otpVerificationForm" th:object="${userDto}" id="otpVerificationForm" method="post">
+					    <div class="input-field">
+					        <input type="text" name="otp" id="otp1" th:field="${userDto.otp}">
+					        <input type="text" name="otp" id="otp2" disabled th:field="${userDto.otp}">
+					        <input type="text" name="otp" id="otp3" disabled th:field="${userDto.otp}">
+					        <input type="text" name="otp" id="otp4" disabled th:field="${userDto.otp}">					        
+					    </div>
+					    <div class="inputBox button">
+					        <input class="otpBtn" type="submit" value="Next">
+					    </div>
+					</form>
+				</div>
+			</div>
+		</section>		
+	</div>
+
+	<script src="/assets/js/authentication.js"></script>
+</body>
+</html>
